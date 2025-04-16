@@ -26,5 +26,8 @@ s.plotTree;
 };
 )
 
-~b[\kd_00].play;
+~bp = { PlayBuf.ar(~b[\kd_00].numChannels, ~b[\kd_00].bufnum, loop: 1, doneAction: 2) };
+
+~bp.play;
+
 
