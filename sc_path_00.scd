@@ -18,7 +18,7 @@ to generate concise and descriptive symbols for buffer access.
 
 (
 ~sb.entries.do { |folder|
-	folder.postln;
+	folder.isFolder.postln;
 };
 )
 
