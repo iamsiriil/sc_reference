@@ -6,7 +6,6 @@ s.plotTree;
 
 ~path = PathName.new("./../soundbank/drums/".resolveRelative);
 
-~clock = TempoClock.new(60/60);
 
 (
 ~bufs = ();
@@ -25,3 +24,78 @@ SynthDef(\drums, {
 	)
 }).add;
 )
+
+Buffer.freeAll;
+
+~x = Synth(\drums, [\buff, ~bufs[\sd_00].bufnum, \loop, 1]);
+~x.free;
+
+
+(
+~makeKick = {
+	Routine {
+		loop {
+			Synth(\drums, [\buff, ~bufs[\kd_01].bufnum]);
+			2.5.wait;
+			Synth(\drums, [\buff, ~bufs[\kd_01].bufnum]);
+			1.5.wait;
+		}
+	}
+};
+)
+
+(
+~makeHat = {
+	Routine {
+		loop {
+			1.wait;
+			Synth(\drums, [\buff, ~bufs[\hh_00].bufnum]);
+			2.wait;
+			Synth(\drums, [\buff, ~bufs[\hh_00].bufnum]);
+			1.wait;
+		}
+	}
+};
+)
+
+(
+~makeSnr = {
+	Routine {
+		loop {
+			0.5.wait;
+			Synth(\drums, [\buff, ~bufs[\sd_00].bufnum]);
+			0.5.wait;
+		}
+	}
+};
+)
+
+
+(
+~kick = ~makeKick.();
+~hat  = ~makeHat.();
+~snr  = ~makeSnr.();
+)
+
+(
+~clock = TempoClock.new(180/60);
+
+~kick.play(~clock, quant: 4);
+~hat.play(~clock, quant: 4);
+~snr.play(~clock, quant: 2);
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
