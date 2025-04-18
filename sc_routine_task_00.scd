@@ -80,14 +80,3 @@ t = f.value.play(quant: 4);
 u = f.value.play(quant: [4, 0.5]);
 
 t.stop; u.stop;
-
-
-
-
-
-
-
-
-
-
-
