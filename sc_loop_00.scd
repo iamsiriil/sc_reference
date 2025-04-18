@@ -82,7 +82,7 @@ Buffer.freeAll;
 
 ~kick.play(~clock, quant: 4);
 ~hat.play(~clock, quant: 4);
-~snr.play(~clock, quant: 2);
+~snr.play(~clock, quant: 1);
 )
 
 
