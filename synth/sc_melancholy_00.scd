@@ -1,4 +1,23 @@
 s.boot;
+s.quit;
+
+(
+~bufs = ();
+~path = PathName.new("./../../soundbank/drums/".resolveRelative);
+Buffer.read(s, ~path.entries[2].entries[2].fullPath, action: { |buf|
+	~bufs[\kd] = buf;
+});
+Buffer.read(s, ~path.entries[0].entries[0].fullPath, action: { |buf|
+	~bufs[\cl] = buf;
+});
+
+SynthDef(\drums, { |bufnum = 0|
+	var pbuf = PlayBuf.ar(2, bufnum);
+	Out.ar(0, pbuf);
+}).add;
+)
+
+Buffer.freeAll;
 
 (
 SynthDef(\tone, { |freq = 400|
@@ -16,7 +35,7 @@ SynthDef(\tone, { |freq = 400|
 )
 
 (
-~t = Task({
+~t_harm = Task({
 	var freqs = [48, 52, 54, 55, 59, 60, 64, 66, 67, 71];
 	loop {
 		Synth(\tone, [\freq, freqs.choose.midicps]);
@@ -26,7 +45,21 @@ SynthDef(\tone, { |freq = 400|
 )
 
 (
+~t_drum = Task({
+	loop {
+		Synth(\drums, [\bufnum, ~bufs[\kd].bufnum]);
+		1.5.wait;
+		Synth(\drums, [\bufnum, ~bufs[\kd].bufnum]);
+		0.5.wait;
+		Synth(\drums, [\bufnum, ~bufs[\cl].bufnum]);
+		2.wait;
+	}
+});
+)
+
+(
 ~clock = TempoClock.new(100/60);
 
-~t.play(~clock);
+~t_harm.play(~clock, quant: 1);
+~t_drum.play(~clock, quant: 1);
 )
