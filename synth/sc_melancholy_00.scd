@@ -50,18 +50,16 @@ SynthDef(\cello, {
 )
 
 (
-~t_harm = { |tonic = \e|
-	var baseNotes = [48, 52, 54, 55, 59, 60, 64, 66, 67, 71];
-	var transpose = if( tonic == \e ) { 0 } { 5 };
-	var notes = baseNotes + transpose;
+~transpose = 0;
 
-	Task({
-		loop {
-			Synth(\tone, [\freq, notes.choose.midicps]);
-			[0.5, 1, 1.5, 2].choose.wait;
-		}
-	});
-}
+~t_harm = Task({
+	var notes = [48, 52, 54, 55, 59, 60, 64, 66, 67, 71];
+	loop {
+		var note = (notes.choose + ~transpose).midicps;
+		Synth(\tone, [\freq, note]);
+		[0.5, 1, 1.5, 2].choose.wait;
+	}
+});
 )
 
 (
@@ -100,8 +98,10 @@ SynthDef(\cello, {
 (
 ~clock = TempoClock.new(100/60);
 
-~t_harm.(\e).play(~clock, quant: 1);
+~t_harm.play(~clock, quant: 1);
 ~celloPhrase.play(~clock, quant: 1);
 ~t_drum.play(~clock, quant: 1);
 )
+
+~transpose = 0
 
