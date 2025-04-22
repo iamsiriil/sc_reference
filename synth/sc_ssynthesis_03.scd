@@ -25,7 +25,6 @@ SynthDef(\multitap, {
 )
 
 Synth(\multitap);
-
 /*********************************************************************************************************/
 
 (
@@ -117,10 +116,19 @@ Synth(\stage5_output, target: ~mainGroup);
 
 Synth(\tapMonitor, target: ~monitorGroup);
 
-
-
-
-
+(
+{
+	var input = Impulse.ar(1); // sharp ping
+	var taps = DelayC.ar(input, 0.5,
+		[0.05, 0.1, 0.2, 0.25] + LFNoise2.ar(4) * 0.01
+	);
+	var feedback = LocalIn.ar(1) * 0.6;
+	var sum = taps.sum + feedback;
+	sum = sum.tanh; // nonlinear distortion
+	LocalOut.ar(sum);
+	Out.ar(0, sum!2 * 0.2);
+}.play;
+)
 
 
 
