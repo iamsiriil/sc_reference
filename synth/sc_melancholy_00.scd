@@ -99,8 +99,8 @@ SynthDef(\cello, {
 ~clock = TempoClock.new(100/60);
 
 ~t_harm.play(~clock, quant: 1);
-~celloPhrase.play(~clock, quant: 1);
-~t_drum.play(~clock, quant: 1);
+~celloPhrase.play(~clock, doReset: true, quant: 1);
+~t_drum.play(~clock, doReset: true, quant: 1);
 )
 
 ~transpose = 0
