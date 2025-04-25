@@ -1,7 +1,12 @@
 s.boot;
 
+
 /**************************************************************************************
 - PLAINCHANT 01
+- Melismatic chant simulator inspired by Aspiciens a Longe (Mixolydian, F4–A5, 229 notes).
+- Features three weighted models: first phrase (D5-heavy, 33 notes), last phrase (C5-heavy,
+  47 notes, G4 end), middle phrases (E5/D5-heavy, 149 notes). Starts on D5, uses sine wave
+  SynthDef, 60 BPM, random phrase lengths [33, 47, 31, 43, 45, 30].
 **************************************************************************************/
 
 (
@@ -36,26 +41,35 @@ Synth(\tone)
 		numPhrases.do({ |p|
 			case
 			{ p == 0 } {
+				"First phrase".postln;
 				notesPerPhrase.choose.do {
 					var tempo = noteDurations.choose;
 					var dur = tempo / ~clock.tempo;
-					Synth(\tone, [\freq, firstPNotes.wchoose(firstPWeights).midicps, \sus, (dur - 0.8)]);
+					Synth(\tone, [\freq, firstPNotes.wchoose(firstPWeights).midicps, \sus, max(dur - 0.8)]);
 					tempo.wait;
 				}
 			}
 			{ p == (numPhrases - 1) } {
-				notesPerPhrase.choose.do {
-					var tempo = noteDurations.choose;
-					var dur = tempo / ~clock.tempo;
-					Synth(\tone, [\freq, lastPNotes.wchoose(lastPWeights).midicps, \sus, (dur - 0.8)]);
-					tempo.wait;
+				var n = notesPerPhrase.choose;
+				"Last phrase".postln;
+				n.do { |i|
+					if ( i == (n - 1) ) {
+						Synth(\tone, [\freq, 67.midicps, \sus, (2 - 0.8)]);
+					} {
+						var tempo = noteDurations.choose;
+						var dur = tempo / ~clock.tempo;
+						Synth(\tone, [\freq, lastPNotes.wchoose(lastPWeights).midicps, \sus, max(dur - 0.8)]);
+						tempo.wait;
+					}
+
 				}
 			}
 			{
+				"Middle phrase".postln;
 				notesPerPhrase.choose.do {
 					var tempo = noteDurations.choose;
 					var dur = tempo / ~clock.tempo;
-					Synth(\tone, [\freq, middlePNotes.wchoose(middlePWeights).midicps, \sus, (dur - 0.8)]);
+					Synth(\tone, [\freq, middlePNotes.wchoose(middlePWeights).midicps, \sus, max(dur - 0.8)]);
 					tempo.wait;
 				}
 			}
@@ -64,10 +78,4 @@ Synth(\tone)
 };
 )
 
-~t.().play;
-
-~firstPNoteCount = [1, 6, 13, 5, 5, 2, 1].sum;
-
-~lastPNoteCount = [1, 5, 7, 5, 14, 9, 4, 2].sum;
-
-~middlePNoteCount = [1, 8, 13, 10, 22, 32, 33, 23, 6, 1].sum + 47 + 33;
+~t.(3).play;
