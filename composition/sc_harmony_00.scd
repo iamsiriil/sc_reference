@@ -26,6 +26,7 @@ SynthDef(\bass, { |freq = 440, sus = 1|
 }).add;
 )
 
+// Test synths
 (
 Synth(\soprano, [\freq, 64.midicps]);
 Synth(\alto, [\freq, 55.midicps]);
@@ -34,14 +35,43 @@ Synth(\bass, [\freq, 36.midicps]);
 )
 
 (
+~chordIsValid = {
+
+};
+
+~noteIsValid = {
+
+};
+
 ~getValidNotes = {
-	arg nextChord, currentNote = 48;
+	arg nextChord, currentNote;
 	var allowedIntervals = [0, 1, 2, 3, 4, 5, 7, 8, 9];
 	nextChord.select { |n| allowedIntervals.includes((n - currentNote).abs) };
 };
 
 ~getNextChord = {
-	arg
+	arg currentchord, nextchord, validNotes, i;
+	var numVoices = currentChord.size;
+	var result;
+
+	if ((i == numVoices) && ~chordIsValid.(currentChord, nextChord)) {
+		^nextChord;
+	};
+
+	if (i < numVoices) {
+
+		validNotes[i].do { |n|
+			nextChord[i] = n;
+
+			if (~noteIsValid.(currentChord[i], nextChord[i])) {
+				result = ~getNextChord.(currentChord, nextChord, validNotes, i + 1);
+				if (result.notNil) { ^result };
+			} {
+				nextChord[i] = 0;
+			}
+			result = nil;
+		};
+	};
 };
 
 ~clock = TempoClock.new(100/60);
@@ -61,15 +91,22 @@ Synth(\bass, [\freq, 36.midicps]);
 		var duration = tempo / ~clock.tempo;
 
 
-		chordProg.size.do { |c|
+		chordProg.size.do { |c, i|
+			var validNotes = Array.fill(4, {[]}), nextChord;
 			var soprano, alto, tenor, bass;
-			var nextChord;
 
-			if (c == 0) {
-				nextChord = currentChord
+			if (i == 0) {
+				nextChord = currentChord;
 			} {
-				nextChord = ~getNextChord.()
+				nextChord = Array.fill(4, 0);
+
+				4.do { |j|
+					validNotes[j] = ~getValidNotes.(chords[c], currentNote[j]);
+				};
+				nextChord = ~getNextChord.(currentChord, nextChord, validNotes, 0);
 			};
+
+			validNotes.nil;
 
 			soprano = Task({
 				Synth(\soprano, [
@@ -120,8 +157,10 @@ Synth(\bass, [\freq, 36.midicps]);
 ~chordProg = ['c', 'f', 'g', 'c'];
 ~t.(~chordProg).play(~clock, quant: 1);
 
+~validNotes = Array.fill(4, 0);
 
-
+~a = [1, 2, 3];
+~a[0] = [1, 2, 3];
 
 
 
