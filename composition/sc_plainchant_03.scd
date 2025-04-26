@@ -106,6 +106,4 @@ SynthDef(\pedal, { |freq = 220, sus = 1|
 };
 )
 
-(
 ~t.(2).play(~clock, quant: 1);
-)
