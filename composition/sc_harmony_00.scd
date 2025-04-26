@@ -1,5 +1,5 @@
 s.boot;
-
+s.quit;
 /**************************************************************************************
 - HARMONY 00
 **************************************************************************************/
@@ -35,12 +35,45 @@ Synth(\bass, [\freq, 36.midicps]);
 )
 
 (
-~chordIsValid = {
+~getOctaves = {
+	arg root;
+	var octaves = Array.new, temp = root;
 
+	while { temp <= 127 } {
+		octaves = octaves.add(temp);
+		temp = temp + 12;
+	};
+	^octaves;
 };
 
-~noteIsValid = {
+~chordIsValid = {
+	arg nextChord, root, i;
+};
+)
 
+(
+~noteIsValid = {
+	arg nextChord, i;
+	case (
+		{ i == 0 }, {
+			if ((nextChord[i] >= 40) && (nextChord[i] <= 60)) { true } { ^false };
+		},
+		{ i == 1 }, {
+			if ((nextChord[i] >= 48) && (nextChord[i] <= 67)) {  } { ^false };
+			if (nextChord[i] > nextChord[i - 1]) {  } { ^false };
+			true;
+		},
+		{ i == 2 }, {
+			if ((nextChord[i] >= 55) && (nextChord[i] <= 74)) {  } { ^false };
+			if (nextChord[i] > nextChord[i - 1]) {  } { ^false };
+			true
+		},
+		{ i == 3 }, {
+			if ((nextChord[i] >= 60) && (nextChord[i] <= 81)) {  } { ^false };
+			if (nextChord[i] > nextChord[i - 1]) {  } { ^false };
+			true
+		}
+	);
 };
 
 ~getValidNotes = {
@@ -50,50 +83,65 @@ Synth(\bass, [\freq, 36.midicps]);
 };
 
 ~getNextChord = {
-	arg currentchord, nextchord, validNotes, i;
+	arg currentChord, nextChord, validNotes, root, i;
 	var numVoices = currentChord.size;
 	var result;
 
-	if ((i == numVoices) && ~chordIsValid.(currentChord, nextChord)) {
+	("~getNextChord | function call | recursion:" + i).postln;
+
+	if (i == numVoices) { // && ~chordIsValid.(currentChord, nextChord)) {
+		"~getNextChord | i == numVoices | exit function".postln;
 		^nextChord;
 	};
 
 	if (i < numVoices) {
 
-		validNotes[i].do { |n|
-			nextChord[i] = n;
+		"~getNextChord | i < numVoices".postln;
 
-			if (~noteIsValid.(currentChord[i], nextChord[i])) {
+		validNotes[i].do { |n|
+
+			nextChord[i] = n;
+			("~getNextChord | validNotes[" ++ i ++ "] loop | nextChord[" ++ i ++"] :" + nextChord[i]).postln; // <----- STOPS HERE
+
+			if (~noteIsValid.(nextChord, i)) {
+
+				("~getNextChord | ~noteIsValid | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
 				result = ~getNextChord.(currentChord, nextChord, validNotes, i + 1);
 				if (result.notNil) { ^result };
 			} {
 				nextChord[i] = 0;
-			}
+				("~getNextChord | ~noteIsValid fail | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
+			};
 			result = nil;
+			"~getNextChord | result = nil".postln;
 		};
 	};
 };
 
 ~clock = TempoClock.new(100/60);
 
-~t = { |chordProg = []|
+~t = { |chordProg|
 	Task({
 		var noteRange = [24, 28, 31, 36, 40, 43, 48, 52, 53, 55, 60, 64];
 		var chordShift = ('c': 0, 'f': 5, 'g': 7);
 
-		var chords = ();
-		var chordProg.do { |c|
-			chords[c] = (noteRange + chordShift[c]);
-		};
 		var currentChord = [36, 48, 55, 64];
 
 		var tempo = 2;
 		var duration = tempo / ~clock.tempo;
 
+		var chords = ();
+		chordProg.do { |c|
+			chords[c] = (noteRange + chordShift[c]);
+		};
 
-		chordProg.size.do { |c, i|
+		chords.postln;
+
+		chordProg.do { |c, i|
 			var validNotes = Array.fill(4, {[]}), nextChord;
 			var soprano, alto, tenor, bass;
+			var root = chords[c][0];
+			("chordProg.do | c :" + c + "| i :" + i).postln;
 
 			if (i == 0) {
 				nextChord = currentChord;
@@ -101,12 +149,13 @@ Synth(\bass, [\freq, 36.midicps]);
 				nextChord = Array.fill(4, 0);
 
 				4.do { |j|
-					validNotes[j] = ~getValidNotes.(chords[c], currentNote[j]);
+					validNotes[j] = ~getValidNotes.(chords[c], currentChord[j]);
 				};
-				nextChord = ~getNextChord.(currentChord, nextChord, validNotes, 0);
+				nextChord = ~getNextChord.(currentChord, nextChord, validNotes, root, 0);
+				"~getNextChord | back to task, after function termination".postln;
 			};
 
-			validNotes.nil;
+			validNotes = nil;
 
 			soprano = Task({
 				Synth(\soprano, [
@@ -154,19 +203,9 @@ Synth(\bass, [\freq, 36.midicps]);
 };
 )
 
+(
 ~chordProg = ['c', 'f', 'g', 'c'];
 ~t.(~chordProg).play(~clock, quant: 1);
-
-~validNotes = Array.fill(4, 0);
-
-~a = [1, 2, 3];
-~a[0] = [1, 2, 3];
-
-
-
-
-
-
-
+)
 
 
