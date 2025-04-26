@@ -11,7 +11,7 @@ s.boot;
 (
 SynthDef(\chant, {
 	arg freq = 440, atk = 0.1, sus = 0.8, rel = 0.2;
-	var snd = SinOsc.ar(freq, SinOsc.ar(5, 0, 0.1));
+	var snd = SinOsc.ar(freq, SinOsc.ar(1, 0, 0.1));
 	snd = snd * Env.linen(atk, sus, rel, curve: \sin).ar(Done.freeSelf);
 	Out.ar(0, snd ! 2);
 }).add;
@@ -28,9 +28,9 @@ SynthDef(\chant, {
 		var lastPNoteCount = [1, 5, 7, 5, 14, 9, 4, 2, 0, 0];
 		var middlePNoteCount = [1, 8, 13, 10, 22, 32, 33, 23, 6, 1];
 
-		var firstPWeights = firstPNoteCount / firstPNoteCount.sum;
-		var lastPWeights = lastPNoteCount / lastPNoteCount.sum;
-		var middlePWeights = middlePNoteCount / middlePNoteCount.sum;
+		var firstPWeights = firstPNoteCount.normalizeSum;
+		var lastPWeights = lastPNoteCount.normalizeSum;
+		var middlePWeights = middlePNoteCount.normalizeSum;
 
 		var noteDuration = [0.5, 1];
 		var currentMidi = 74;
@@ -77,9 +77,9 @@ SynthDef(\chant, {
 
 				Synth( \chant, [
 					\freq, nextMidi.midicps,
-					\atk, 0.1,
-					\sus, max(dur - 0.3, 0.01),
-					\rel, 0.2
+					\atk, 0.2,
+					\sus, max(dur - 0.7, 0.01),
+					\rel, 0.5
 				]);
 				currentMidi = nextMidi;
 				tempo.wait;

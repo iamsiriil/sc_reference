@@ -27,18 +27,16 @@ SynthDef(\tone, { |freq = 440, sus = 1|
 )
 
 (
-~clock = TempoClock.new(60/60);
+~clock = TempoClock.new(100/60);
 
 ~t = Task({
 	var notes = [65, 67, 69, 71, 72, 74, 76, 77, 79, 81];
 	var noteCounts = [2, 13, 20, 15, 42, 55, 42, 30, 8, 2];
-	var totalNotes = noteCounts.sum.postln;
-	var weight = noteCounts / totalNotes;
-	weight = weight.normalize;
+	var weight = noteCounts.normalizeSum;
 	loop {
 		var temp = [0.5, 1].choose;
-		var dur = temp / ~clock.tempo;
-		Synth(\tone, [\freq, notes.wchoose(weight).midicps, \sus, (dur - 0.8)]);
+		var dur = (temp / ~clock.tempo).postln;
+		Synth(\tone, [\freq, notes.wchoose(weight).midicps, \sus, max(dur - 0.8, 0.01)]);
 		temp.wait;
 	}
 });
