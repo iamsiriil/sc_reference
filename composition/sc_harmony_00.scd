@@ -139,9 +139,9 @@ Synth(\bass, [\freq, 36.midicps]);
 						nextChord[i] = 0;
 						("~getNextChord | ~noteIsValid fail | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
 					};
-					nil;
 				//};
 			};
+			nil;
 			nextChord;
 			//("~getNextChord | result = nil | recursion :" + i + "| result :" + result).postln;
 			//nextChord = ~b.(result);
@@ -230,13 +230,13 @@ Synth(\bass, [\freq, 36.midicps]);
 				});
 			};
 
-			(
+			//(
 				soprano.(nextChord[3], duration).play(~clock, quant: 1);
 				alto.(nextChord[2], duration).play(~clock, quant: 1);
 				tenor.(nextChord[1], duration).play(~clock, quant: 1);
 				bass.(nextChord[0], duration).play(~clock, quant: 1);
 				tempo.wait;
-			);
+			//);
 
 			currentChord = nextChord;
 
