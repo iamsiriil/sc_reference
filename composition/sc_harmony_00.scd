@@ -52,28 +52,50 @@ Synth(\bass, [\freq, 36.midicps]);
 )
 
 (
+~rangeIsValidB = { |note|
+	if ((note >= 40) && (note <= 60)) { true } { false };
+};
+
+~rangeIsValidT = { |note|
+	if ((note >= 48) && (note <= 67)) { true } { false };
+};
+
+~rangeIsValidA = { |note|
+	if ((note >= 55) && (note <= 74)) { true } { false };
+};
+
+~rangeIsValidS = { |note|
+	if ((note >= 60) && (note <= 81)) { true } { false };
+};
+
+~checkVoiceCross = {|lowerNote, higherNote|
+	if (lowerNote < higherNote) { true } { false };
+};
+
 ~noteIsValid = {
 	arg nextChord, i;
+	//var return;
+	"~noteIsValid | Fcuntion call".postln;
+
 	case (
 		{ i == 0 }, {
-			if ((nextChord[i] >= 40) && (nextChord[i] <= 60)) { true } { ^false };
+			("~notIsValid | case i :" + i).postln;
+			if (~rangeIsValidB.(nextChord[i])) { true } { false };
 		},
 		{ i == 1 }, {
-			if ((nextChord[i] >= 48) && (nextChord[i] <= 67)) {  } { ^false };
-			if (nextChord[i] > nextChord[i - 1]) {  } { ^false };
-			true;
+			("~notIsValid | case i :" + i).postln;
+			if (~rangeIsValidT.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
 		},
 		{ i == 2 }, {
-			if ((nextChord[i] >= 55) && (nextChord[i] <= 74)) {  } { ^false };
-			if (nextChord[i] > nextChord[i - 1]) {  } { ^false };
-			true
+			("~notIsValid | case i :" + i).postln;
+			if (~rangeIsValidA.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
 		},
 		{ i == 3 }, {
-			if ((nextChord[i] >= 60) && (nextChord[i] <= 81)) {  } { ^false };
-			if (nextChord[i] > nextChord[i - 1]) {  } { ^false };
-			true
+			("~notIsValid | case i :" + i).postln;
+			if (~rangeIsValidS.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
 		}
 	);
+
 };
 
 ~getValidNotes = {
@@ -83,37 +105,46 @@ Synth(\bass, [\freq, 36.midicps]);
 };
 
 ~getNextChord = {
-	arg currentChord, nextChord, validNotes, root, i;
-	var numVoices = currentChord.size;
-	var result;
+	arg numVoices, currentChord, nextChord, validNotes, root, i;
+	var isValid, j;
 
 	("~getNextChord | function call | recursion:" + i).postln;
 
-	if (i == numVoices) { // && ~chordIsValid.(currentChord, nextChord)) {
-		"~getNextChord | i == numVoices | exit function".postln;
-		^nextChord;
-	};
+		if (i == numVoices) { // && ~chordIsValid.(currentChord, nextChord)) {
+		("~getNextChord | exit function | i == " ++ i ++ " | nextChord : " + nextChord).postln;
+			nextChord;
+		} {
 
-	if (i < numVoices) {
+			if (i < numVoices) {
 
-		"~getNextChord | i < numVoices".postln;
+				"~getNextChord | i < numVoices".postln;
 
-		validNotes[i].do { |n|
+			//~b = block { |result|
 
-			nextChord[i] = n;
-			("~getNextChord | validNotes[" ++ i ++ "] loop | nextChord[" ++ i ++"] :" + nextChord[i]).postln; // <----- STOPS HERE
+				validNotes[i].do { |n|
 
-			if (~noteIsValid.(nextChord, i)) {
+					nextChord[i] = n;
+					("~getNextChord | validNotes[" ++ i ++ "] loop | nextChord[" ++ i ++"] :" + nextChord[i]).postln; // <----- STOPS HERE
 
-				("~getNextChord | ~noteIsValid | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
-				result = ~getNextChord.(currentChord, nextChord, validNotes, i + 1);
-				if (result.notNil) { ^result };
-			} {
-				nextChord[i] = 0;
-				("~getNextChord | ~noteIsValid fail | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
+					isValid = ~noteIsValid.(nextChord, i);
+					("~getNextChord | ~noteIsValid : " + isValid).postln;
+					if (isValid) {
+
+						("~getNextChord | ~noteIsValid | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
+						i = i + 1;
+						nextChord = ~getNextChord.(numVoices, currentChord, nextChord, validNotes, root, i);
+						("~getNextChord | after recursion | nextChord :" + nextChord).postln;
+						if (nextChord.notNil) { nextChord };
+					} {
+						nextChord[i] = 0;
+						("~getNextChord | ~noteIsValid fail | nextChord[" ++ i ++ "] : " + nextChord[i]).postln;
+					};
+					nil;
+				//};
 			};
-			result = nil;
-			"~getNextChord | result = nil".postln;
+			nextChord;
+			//("~getNextChord | result = nil | recursion :" + i + "| result :" + result).postln;
+			//nextChord = ~b.(result);
 		};
 	};
 };
@@ -122,7 +153,7 @@ Synth(\bass, [\freq, 36.midicps]);
 
 ~t = { |chordProg|
 	Task({
-		var noteRange = [24, 28, 31, 36, 40, 43, 48, 52, 53, 55, 60, 64];
+		var noteRange = [24, 28, 31, 36, 40, 43, 48, 52, 53, 55, 60, 64, 67, 72, 76, 79, 84, 88, 91];
 		var chordShift = ('c': 0, 'f': 5, 'g': 7);
 
 		var currentChord = [36, 48, 55, 64];
@@ -138,7 +169,7 @@ Synth(\bass, [\freq, 36.midicps]);
 		chords.postln;
 
 		chordProg.do { |c, i|
-			var validNotes = Array.fill(4, {[]}), nextChord;
+			var validNotes = Array.fill(4, {[]}), nextChord = [], getChord;
 			var soprano, alto, tenor, bass;
 			var root = chords[c][0];
 			("chordProg.do | c :" + c + "| i :" + i).postln;
@@ -146,64 +177,74 @@ Synth(\bass, [\freq, 36.midicps]);
 			if (i == 0) {
 				nextChord = currentChord;
 			} {
-				nextChord = Array.fill(4, 0);
+				getChord = Array.fill(4);
 
 				4.do { |j|
 					validNotes[j] = ~getValidNotes.(chords[c], currentChord[j]);
+					("~getValidNotes | validNotes :" + validNotes).postln;
 				};
-				nextChord = ~getNextChord.(currentChord, nextChord, validNotes, root, 0);
-				"~getNextChord | back to task, after function termination".postln;
+				nextChord = ~getNextChord.(currentChord.size, currentChord, getChord, validNotes, root, 0);
+				("~getNextChord | back to task, after function termination | nextChord :" + nextChord).postln;
 			};
 
 			validNotes = nil;
 
-			soprano = Task({
-				Synth(\soprano, [
-					\freq, nextChord[0].midicps;
-					\sus, max(duration - 0.4, 0.5);
-				]);
+			("SATB | nextChord :" + nextChord).postln;
+			soprano = { |note, duration|
+				Task({
+					Synth(\soprano, [
+						\freq, note.midicps,
+						\sus, max(duration - 0.4, 0.5)
+					]);
+					tempo.wait;
+				});
+			};
+
+			alto = { |note, duration|
+				Task({
+					Synth(\alto, [
+						\freq, note.midicps,
+						\sus, max(duration - 0.4, 0.5)
+					]);
+					tempo.wait;
+				});
+			};
+
+			tenor = { |note, duration|
+				Task({
+					Synth(\tenor, [
+						\freq, note.midicps,
+						\sus, max(duration - 0.4, 0.5)
+					]);
+					tempo.wait;
+				});
+			};
+
+			bass = { |note, duration|
+				Task({
+					Synth(\bass, [
+						\freq, note.midicps,
+						\sus, max(duration - 0.4, 0.5)
+					]);
+					tempo.wait;
+				});
+			};
+
+			(
+				soprano.(nextChord[3], duration).play(~clock, quant: 1);
+				alto.(nextChord[2], duration).play(~clock, quant: 1);
+				tenor.(nextChord[1], duration).play(~clock, quant: 1);
+				bass.(nextChord[0], duration).play(~clock, quant: 1);
 				tempo.wait;
-			});
-
-			alto = Task({
-				Synth(\alto, [
-					\freq, nextChord[1].midicps;
-					\sus, max(duration - 0.4, 0.5);
-				]);
-				tempo.wait;
-			});
-
-			tenor = Task({
-				Synth(\tenor, [
-					\freq, nextChord[2].midicps;
-					\sus, max(duration - 0.4, 0.5);
-				]);
-				tempo.wait;
-			});
-
-			bass = Task({
-				Synth(\bass, [
-					\freq, nextChord[3].midicps;
-					\sus, max(duration - 0.4, 0.5);
-				]);
-				tempo.wait;
-			});
-
-			soprano.().play(~clock, quant: 1);
-			alto.().play(~clock, quant: 1);
-			tenor.().play(~clock, quant: 1);
-			bass.().play(~clock, quant: 1);
-
-			tempo.wait;
+			);
 
 			currentChord = nextChord;
 
 		}
 	});
 };
-)
 
-(
+
 ~chordProg = ['c', 'f', 'g', 'c'];
 ~t.(~chordProg).play(~clock, quant: 1);
 )
