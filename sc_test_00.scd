@@ -52,8 +52,9 @@
 ~numVoices = ~nextChord.size;
 ~validNotes = [[29, 33, 36, 41, 45], [41, 45, 48, 53, 57], [48, 53, 57, 58, 60], [57, 60, 65, 69, 72]];
 
-~getNextChord = { |numVoices, nextChord, validNextChords, validNotes, i|
-	var isValid, result;
+~getNextChord = {
+	arg numVoices, nextChord, validNextChords, validNotes, i;
+	var isValid, result, nextChord = Array.fill(4, {0});;
 
 	if (i == numVoices) {
 		("i == numVoices | exit function | i :" + i + "| next chord : " + nextChord).postln;
@@ -76,14 +77,14 @@
 
 ~getNextChord.(~numVoices, ~nextChord, ~validNextChords, ~validNotes, 0);
 ("Valid next chords :" + ~validNextChords).postln;
-("Next chord :" + ~nextChord).postln;
+//("Next chord :" + ~nextChord).postln;
 )
 
 ~validNextChords.size;
 
 
-
-
+~nextChord = Array.fill(4, {0});
+~nextChord = [1, 2, 3, 4];
 
 
 
