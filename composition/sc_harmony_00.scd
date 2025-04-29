@@ -1,7 +1,14 @@
 s.boot;
 s.quit;
+
 /**************************************************************************************
 - HARMONY 00
+- Four-voice chord progression generator with backtracking for C, F, G triads.
+- Features: Hard-coded chord ranges, reuse validNextChords for repeated chords, static
+  state (~chordState), voice ranges (bass: E2–C4, tenor: C3–G4, alto: G3–D5, soprano: C4–A5),
+  no voice crossing, voice-specific voice leading (bass: unisons, 2nds, 3rds, 4ths, 5ths,
+  octaves; tenor/alto: unisons, 2nds, 3rds, 4ths; soprano: +6ths). Pulse.ar SynthDef, 100 BPM.
+- Prepares for HARMONY 01 (generated first chord, diatonic triads, stricter rules).
 **************************************************************************************/
 
 (
@@ -81,6 +88,7 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 		);
 
 		var currentChord = [48, 55, 64, 72];
+		var validNextChords;
 
 		var tempo = 2;
 		var duration = tempo / ~clock.tempo;
@@ -88,22 +96,20 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 		chordProg.do { |c, i|
 			var validNotes = Array.fill(4, {[]});
 			var nextChord = Array.fill(4, {0});
-			var validNextChords, buildChord = Array.fill(4, {0});
-			var soprano, alto, tenor, bass;
-			var root = chords[c][0];
+			var buildChord = Array.fill(4, {0});
 
-
-			if (i == 0) {
-				nextChord = currentChord;
-			} {
+			case
+			{ i == 0 } { nextChord = currentChord }
+			{ (i > 0) && (c == chordProg[i - 1]) } { nextChord = validNextChords.choose }
+			{
+				validNextChords = nil;
 				4.do { |j|
 					validNotes[j] = ~getValidNotes.(chords[c], currentChord[j]);
 				};
 				validNextChords = Array.new(10);
 
 				~getNextChord.(currentChord.size, buildChord, validNextChords, validNotes, 0);
-				nextChord = validNextChords.choose;
-				validNextChords = nil;
+				nextChord = validNextChords.choose ?? { currentChord };
 			};
 
 			validNotes = nil;
