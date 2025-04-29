@@ -43,7 +43,7 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 
 ~getValidNotes = {
 	arg nextChord, currentNote;
-	var allowedIntervals = [0, 1, 2, 3, 4, 5, 7, 8, 9];
+	var allowedIntervals = [0, 1, 2, 3, 4, 5, 7];
 	nextChord.select { |n| allowedIntervals.includes((n - currentNote).abs) };
 };
 
@@ -73,18 +73,17 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 
 ~t = { |chordProg|
 	Task({
-		var noteRange = [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79, 84];
-		var chordShift = ('c': 0, 'f': 5, 'g': 7);
+		var noteRange = [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79];
+		var chords = (
+			'c': [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79],
+			'f': [41, 45, 48, 53, 57, 60, 65, 69, 72, 77, 81],
+			'g': [43, 47, 50, 55, 59, 62, 67, 71, 74, 79]
+		);
 
-		var currentChord = [36, 48, 55, 64];
+		var currentChord = [48, 55, 64, 72];
 
 		var tempo = 2;
 		var duration = tempo / ~clock.tempo;
-
-		var chords = ();
-		chordProg.do { |c|
-			chords[c] = (noteRange + chordShift[c]);
-		};
 
 		chordProg.do { |c, i|
 			var validNotes = Array.fill(4, {[]});
