@@ -59,8 +59,8 @@
 
 // Gets the first valid chord it finds
 (
-~getValidChord = Routine {
-	arg numVoices, nextChord, validNotes, i;
+~getValidChord = Routine({
+	arg numVoices, validNotes, i;
 	var isValid;
 
 	if (i == numVoices) { // && chordIsValid.(~nextChord)
@@ -72,7 +72,8 @@
 
 			if (~noteIsValid.(~nextChord, i)) {
 
-				if (~getNextChord.(numVoices, nextChord, validNotes, (i + 1))) {
+				i = i + 1;
+				if (~getNextChord.(numVoices, validNotes, i)) {
 					^true;
 				};
 			} {
@@ -81,9 +82,9 @@
 		};
 		^false;
 	};
-};
+});
 
-if (~getValidChord.(4, ~nextChord, ~validNotes, 0)) {
+if (~getValidChord.(4, ~validNotes, 0)) {
 	"Next Chord: %".format(~nextChord);
 } {
 	"Failed".postln;
