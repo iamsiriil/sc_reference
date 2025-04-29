@@ -1,6 +1,6 @@
 (
 ~currentChord = [48, 55, 64, 72];
-~nextChord = Array.fill(4, {0});
+~nextChord = [];
 ~validNextChord = Array.fill(4, {[]});
 ~validNotes = [[41, 45, 48, 53], [48, 53, 57, 60], [57, 60, 65, 69], [65, 69, 72, 77]];
 
@@ -68,15 +68,15 @@
 	} {
 		validNotes[i].do { |note|
 
-			nextChord.put(i, note);
+			~nextChord.add(note);
 
-			if (~noteIsValid.(nextChord, i)) {
+			if (~noteIsValid.(~nextChord, i)) {
 
 				if (~getNextChord.(numVoices, nextChord, validNotes, (i + 1))) {
 					^true;
 				};
 			} {
-				nextChord.put(i, 0);
+				~nextChord.removeAt(i);
 			};
 		};
 		^false;
