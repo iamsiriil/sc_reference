@@ -11,19 +11,6 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 }).add;
 )
 
-~path = Platform.userHomeDir +/+ "Music/midi/piano_test.xml";
-~score = CtkScore.new;
-~piano = CtkSynthDef.new();
-
-
-// Test synths
-(
-Synth(\sawtone, [\freq, 64.midicps]);
-Synth(\sawtone, [\freq, 55.midicps]);
-Synth(\sawtone, [\freq, 48.midicps]);
-Synth(\sawtone, [\freq, 36.midicps]);
-)
-
 (
 ~rangeIsValid = IdentityDictionary[
 	\spn -> { |note| (note >= 60) && (note <= 81) },
@@ -86,7 +73,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 ~t = { |chordProg|
 	Task({
-		var noteRange = [24, 28, 31, 36, 40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79, 84, 88, 91];
+		var noteRange = [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79, 84];
 		var chordShift = ('c': 0, 'f': 5, 'g': 7);
 
 		var currentChord = [36, 48, 55, 64];
