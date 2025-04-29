@@ -13,8 +13,8 @@ s.quit;
 **************************************************************************************/
 
 (
-SynthDef(\pulsetone, { |freq = 440, sus = 1|
-	var snd = Pulse.ar(freq, 0.1) * Env.linen(0.2, sus, 0.4, 0.2, \sin).ar(Done.freeSelf);
+SynthDef(\pulsetone, { |freq = 440, atk = 0.2, sus = 0.5, rel = 0.3|
+	var snd = Pulse.ar(freq, 0.1) * Env.linen(atk, sus, rel, 0.2, \sin).ar(Done.freeSelf);
 	Out.ar(0, snd ! 2);
 }).add;
 )
@@ -96,6 +96,7 @@ SynthDef(\pulsetone, { |freq = 440, sus = 1|
 
 		var tempo = 2;
 		var duration = tempo / ~clock.tempo;
+		var envDurations = [0.1, 0.6, 0.3].breakAndNormalize(duration).collect(_.clip(0.01, 5.0));
 
 		chordProg.do { |c, i|
 			var validNotes = Array.fill(4, {[]});
@@ -121,7 +122,12 @@ SynthDef(\pulsetone, { |freq = 440, sus = 1|
 			};
 
 			nextChord.do { |note, voiceIndex|
-				Synth(\pulsetone, [\freq, note.midicps, \sus, max(duration - 0.4, 0.5)]);
+				Synth(\pulsetone, [
+					\freq, note.midicps,
+					\atk, envDurations[0],
+					\sus, envDurations[1],
+					\rel, envDurations[2]
+				]);
 			};
 			tempo.wait;
 
