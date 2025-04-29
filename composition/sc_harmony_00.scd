@@ -113,6 +113,7 @@ SynthDef(\pulsetone, { |freq = 440, atk = 0.2, sus = 0.5, rel = 0.3|
 				4.do { |j|
 					validNotes[j] = ~getValidNotes.(~chordState[\chords][c].select(~rangeIsValid[voices[j]]), currentChord[j]);
 				};
+				"Valid Notes: %".format(validNotes).postln;
 				validNextChords = Array.new(10);
 				~getNextChords.(currentChord.size, buildChord, validNextChords, validNotes, 0);
 				~chordState[\lastValidNextChords] = validNextChords;
