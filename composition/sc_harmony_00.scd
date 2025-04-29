@@ -6,10 +6,15 @@ s.quit;
 
 (
 SynthDef(\sawtone, { |freq = 440, sus = 1|
-	var snd = SinOsc.ar(freq) * Env.linen(0.2, sus, 0.4, 0.2, \sin).ar(Done.freeSelf);
+	var snd = Pulse.ar(freq, 0.1) * Env.linen(0.2, sus, 0.4, 0.2, \sin).ar(Done.freeSelf);
 	Out.ar(0, snd ! 2);
 }).add;
 )
+
+~path = Platform.userHomeDir +/+ "Music/midi/piano_test.xml";
+~score = CtkScore.new;
+~piano = CtkSynthDef.new();
+
 
 // Test synths
 (
@@ -20,61 +25,33 @@ Synth(\sawtone, [\freq, 36.midicps]);
 )
 
 (
-~getOctaves = {
-	arg root;
-	var octaves = Array.new, temp = root;
+~rangeIsValid = IdentityDictionary[
+	\spn -> { |note| (note >= 60) && (note <= 81) },
+	\alt -> { |note| (note >= 55) && (note <= 74) },
+	\ten -> { |note| (note >= 48) && (note <= 67) },
+	\bas -> { |note| (note >= 40) && (note <= 60) }
+];
 
-	while { temp <= 127 } {
-		octaves = octaves.add(temp);
-		temp = temp + 12;
-	};
-	^octaves;
-};
-)
-
-(
-~rangeIsValidB = { |note|
-	if ((note >= 40) && (note <= 60)) { true } { false };
-};
-
-~rangeIsValidT = { |note|
-	if ((note >= 48) && (note <= 67)) { true } { false };
-};
-
-~rangeIsValidA = { |note|
-	if ((note >= 55) && (note <= 74)) { true } { false };
-};
-
-~rangeIsValidS = { |note|
-	if ((note >= 60) && (note <= 81)) { true } { false };
-};
-
-~checkVoiceCross = {|lowerNote, higherNote|
-	if (lowerNote < higherNote) { true } { false };
-};
+~checkVoiceCross = { |lowerNote, higherNote| (lowerNote < higherNote) };
 
 ~noteIsValid = {
 	arg nextChord, i;
-	"~noteIsValid | Fcuntion call".postln;
 
 	case (
 		{ i == 0 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidB.(nextChord[i])) { true } { false };
+			~rangeIsValid[\bas].(nextChord[i]);
 		},
 		{ i == 1 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidT.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
+			~rangeIsValid[\ten].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
 		},
 		{ i == 2 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidA.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
+			~rangeIsValid[\alt].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
 		},
 		{ i == 3 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidS.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
+			~rangeIsValid[\spn].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
 		}
 	);
+
 };
 
 ~getValidNotes = {
@@ -109,7 +86,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 ~t = { |chordProg|
 	Task({
-		var noteRange = [24, 28, 31, 36, 40, 43, 48, 52, 53, 55, 60, 64, 67, 72, 76, 79, 84, 88, 91];
+		var noteRange = [24, 28, 31, 36, 40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79, 84, 88, 91];
 		var chordShift = ('c': 0, 'f': 5, 'g': 7);
 
 		var currentChord = [36, 48, 55, 64];
@@ -122,14 +99,13 @@ Synth(\sawtone, [\freq, 36.midicps]);
 			chords[c] = (noteRange + chordShift[c]);
 		};
 
-		chords.postln;
-
 		chordProg.do { |c, i|
 			var validNotes = Array.fill(4, {[]});
 			var nextChord = Array.fill(4, {0});
 			var validNextChords, buildChord = Array.fill(4, {0});
 			var soprano, alto, tenor, bass;
 			var root = chords[c][0];
+
 
 			if (i == 0) {
 				nextChord = currentChord;
@@ -148,7 +124,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 			soprano = { |note, duration|
 				Task({
-					Synth(\sawtone, [
+					Synth(\piano, [
 						\freq, note.midicps,
 						\sus, max(duration - 0.4, 0.5)
 					]);
@@ -158,7 +134,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 			alto = { |note, duration|
 				Task({
-					Synth(\sawtone, [
+					Synth(\piano, [
 						\freq, note.midicps,
 						\sus, max(duration - 0.4, 0.5)
 					]);
@@ -168,7 +144,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 			tenor = { |note, duration|
 				Task({
-					Synth(\sawtone, [
+					Synth(\piano, [
 						\freq, note.midicps,
 						\sus, max(duration - 0.4, 0.5)
 					]);
@@ -178,7 +154,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 			bass = { |note, duration|
 				Task({
-					Synth(\sawtone, [
+					Synth(\piano, [
 						\freq, note.midicps,
 						\sus, max(duration - 0.4, 0.5)
 					]);
@@ -193,7 +169,7 @@ Synth(\sawtone, [\freq, 36.midicps]);
 			tempo.wait;
 
 			currentChord = nextChord;
-		}
+		};
 	});
 };
 

@@ -1,49 +1,44 @@
 (
-~rangeIsValidB = { |note|
-	if ((note >= 40) && (note <= 60)) { true } { false };
-};
+~vRan = (
+	spn: [60, 81],
+	alt: [55, 74],
+	ten: [48, 67],
+	bas: [40, 60]
+);
+)
 
-~rangeIsValidT = { |note|
-	if ((note >= 48) && (note <= 67)) { true } { false };
-};
+(
+~rangeIsValid = IdentityDictionary[
+	\spn -> { |note| (note >= 60) && (note <= 81) },
+	\alt -> { |note| (note >= 55) && (note <= 74) },
+	\ten -> { |note| (note >= 48) && (note <= 67) },
+	\bas -> { |note| (note >= 40) && (note <= 60) }
+];
 
-~rangeIsValidA = { |note|
-	if ((note >= 55) && (note <= 74)) { true } { false };
-};
-
-~rangeIsValidS = { |note|
-	if ((note >= 60) && (note <= 81)) { true } { false };
-};
-
-~checkVoiceCross = {|lowerNote, higherNote|
-	if (lowerNote < higherNote) { true } { false };
-};
+~checkVoiceCross = { |lowerNote, higherNote| (lowerNote < higherNote) };
 
 ~noteIsValid = {
 	arg nextChord, i;
-	//var return;
-	"~noteIsValid | Fcuntion call".postln;
 
 	case (
 		{ i == 0 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidB.(nextChord[i])) { true } { false };
+			~rangeIsValid[\bas].(nextChord[i]);
 		},
 		{ i == 1 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidT.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
+			~rangeIsValid[\ten].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
 		},
 		{ i == 2 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidA.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
+			~rangeIsValid[\alt].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
 		},
 		{ i == 3 }, {
-			("~notIsValid | case i :" + i).postln;
-			if (~rangeIsValidS.(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i])) { true } { false };
+			~rangeIsValid[\spn].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
 		}
 	);
 
 };
+)
+
+~noteIsValid.([50, 55], 1);
 
 ~currentChord = [36, 48, 55, 64];
 ~nextChord = Array.fill(4, {0});
@@ -79,19 +74,6 @@
 ("Valid next chords :" + ~validNextChords).postln;
 //("Next chord :" + ~nextChord).postln;
 )
-
-~validNextChords.size;
-
-
-~nextChord = Array.fill(4, {0});
-~nextChord = [1, 2, 3, 4];
-
-
-
-
-
-
-
 
 
 
