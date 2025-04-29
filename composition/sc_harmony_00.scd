@@ -3,12 +3,13 @@ s.quit;
 
 /**************************************************************************************
 - HARMONY 00
-- Four-voice chord progression generator with backtracking for C, F, G triads.
-- Features: Hard-coded chord ranges, reuse validNextChords for repeated chords, static
-  state (~chordState), voice ranges (bass: E2–C4, tenor: C3–G4, alto: G3–D5, soprano: C4–A5),
-  no voice crossing, voice-specific voice leading (bass: unisons, 2nds, 3rds, 4ths, 5ths,
-  octaves; tenor/alto: unisons, 2nds, 3rds, 4ths; soprano: +6ths). Pulse.ar SynthDef, 100 BPM.
-- Prepares for HARMONY 01 (generated first chord, diatonic triads, stricter rules).
+- Four-voice chord progression generator with backtracking for C, Dm, Em, F, G, Am triads.
+- Features: Hard-coded diatonic chord ranges, reuse lastValidNextChords for repeated chords,
+  static state (~chordState), voice ranges (bass: E2–C4, tenor: C3–G4, alto: G3–D5,
+  soprano: C4–A5), no voice crossing, simplified voice leading (all voices: unisons, steps,
+  3rds, 4ths, 5ths). Pulse.ar SynthDef, 100 BPM, 0.8s sustain. Includes generated first
+  chord for flexibility.
+- Prepares for HARMONY 01 (dynamic triad generation, stricter voice-leading, doubling rules).
 **************************************************************************************/
 
 (
@@ -19,11 +20,23 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 )
 
 (
+~chordState = (
+	chords: (
+			'c': [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79], // C Major: C E G
+			'd': [41, 45, 50, 53, 57, 62, 65, 69, 74, 77, 81], // D minor: D F A
+			'e': [40, 43, 47, 52, 55, 59, 64, 67, 71, 76, 79], // E minor: E G B
+ 			'f': [41, 45, 48, 53, 57, 60, 65, 69, 72, 77, 81], // F Major: F A C
+			'g': [43, 47, 50, 55, 59, 62, 67, 71, 74, 79],     // G Major: G B D
+			'a': [40, 45, 48, 52, 57, 60, 64, 69, 72, 76, 81]  // A minor: A C E
+	),
+	lastChord: nil,
+	lastValidNextChords: nil
+);
 ~rangeIsValid = IdentityDictionary[
-	\spn -> { |note| (note >= 60) && (note <= 81) },
-	\alt -> { |note| (note >= 55) && (note <= 74) },
-	\ten -> { |note| (note >= 48) && (note <= 67) },
-	\bas -> { |note| (note >= 40) && (note <= 60) }
+	\spn -> { |note| (note >= 60) && (note <= 81) }, // C4-A5
+	\alt -> { |note| (note >= 55) && (note <= 74) }, // G3-D5
+	\ten -> { |note| (note >= 48) && (note <= 67) }, // C3-G4
+	\bas -> { |note| (note >= 40) && (note <= 60) }  // E2-C4
 ];
 
 ~checkVoiceCross = { |lowerNote, higherNote| (lowerNote < higherNote) };
@@ -31,21 +44,19 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 ~noteIsValid = {
 	arg nextChord, i;
 
-	case (
-		{ i == 0 }, {
-			~rangeIsValid[\bas].(nextChord[i]);
-		},
-		{ i == 1 }, {
-			~rangeIsValid[\ten].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
-		},
-		{ i == 2 }, {
-			~rangeIsValid[\alt].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
-		},
-		{ i == 3 }, {
-			~rangeIsValid[\spn].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
-		}
-	);
-
+	case
+	{ i == 0 } {
+		~rangeIsValid[\bas].(nextChord[i]);
+	}
+	{ i == 1 } {
+		~rangeIsValid[\ten].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
+	}
+	{ i == 2 } {
+		~rangeIsValid[\alt].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
+	}
+	{ i == 3 } {
+		~rangeIsValid[\spn].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
+	};
 };
 
 ~getValidNotes = {
@@ -80,13 +91,6 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 
 ~t = { |chordProg|
 	Task({
-		var noteRange = [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79];
-		var chords = (
-			'c': [40, 43, 48, 52, 55, 60, 64, 67, 72, 76, 79],
-			'f': [41, 45, 48, 53, 57, 60, 65, 69, 72, 77, 81],
-			'g': [43, 47, 50, 55, 59, 62, 67, 71, 74, 79]
-		);
-
 		var currentChord = [48, 55, 64, 72];
 		var validNextChords;
 
@@ -97,22 +101,24 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 			var validNotes = Array.fill(4, {[]});
 			var nextChord = Array.fill(4, {0});
 			var buildChord = Array.fill(4, {0});
+			var voices = [\bas, \ten, \alt, \spn];
 
 			case
 			{ i == 0 } { nextChord = currentChord }
-			{ (i > 0) && (c == chordProg[i - 1]) } { nextChord = validNextChords.choose }
+			{ (i > 0) && (c == chordProg[i - 1]) } {
+				nextChord = ~chordState[\lastValidNextChords].choose ?? { currentChord };
+			}
 			{
-				validNextChords = nil;
 				4.do { |j|
-					validNotes[j] = ~getValidNotes.(chords[c], currentChord[j]);
+					validNotes[j] = ~getValidNotes.(~chordState[\chords][c].select(~rangeIsValid[voices[j]]), currentChord[j]);
 				};
 				validNextChords = Array.new(10);
-
 				~getNextChord.(currentChord.size, buildChord, validNextChords, validNotes, 0);
-				nextChord = validNextChords.choose ?? { currentChord };
+				~chordState[\lastValidNextChords] = validNextChords;
+				nextChord = validNextChords.choose ?? { currentChord }; // Defaults to current chord if validNextChord is nil.
+				validNextChords = nil;
+				validNotes = nil;
 			};
-
-			validNotes = nil;
 
 			nextChord.do { |note, voiceIndex|
 				Synth(\sawtone, [\freq, note.midicps, \sus, max(duration - 0.4, 0.5)]);
@@ -124,7 +130,7 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 	});
 };
 
-~chordProg = ['c', 'f', 'g', 'c', 'f', 'f', 'g', 'c'];
+~chordProg = ['c', 'f', 'a', 'e', 'g', 'c', 'd', 'f', 'g', 'c'];
 ~t.(~chordProg).play(~clock, quant: 1);
 )
 
