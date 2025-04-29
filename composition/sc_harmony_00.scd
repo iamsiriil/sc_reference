@@ -122,50 +122,9 @@ Synth(\sawtone, [\freq, 36.midicps]);
 
 			validNotes = nil;
 
-			soprano = { |note, duration|
-				Task({
-					Synth(\piano, [
-						\freq, note.midicps,
-						\sus, max(duration - 0.4, 0.5)
-					]);
-					tempo.wait;
-				});
+			nextChord.do { |note, voiceIndex|
+				Synth(\sawtone, [\freq, note.midicps, \sus, max(duration - 0.4, 0.5)]);
 			};
-
-			alto = { |note, duration|
-				Task({
-					Synth(\piano, [
-						\freq, note.midicps,
-						\sus, max(duration - 0.4, 0.5)
-					]);
-					tempo.wait;
-				});
-			};
-
-			tenor = { |note, duration|
-				Task({
-					Synth(\piano, [
-						\freq, note.midicps,
-						\sus, max(duration - 0.4, 0.5)
-					]);
-					tempo.wait;
-				});
-			};
-
-			bass = { |note, duration|
-				Task({
-					Synth(\piano, [
-						\freq, note.midicps,
-						\sus, max(duration - 0.4, 0.5)
-					]);
-					tempo.wait;
-				});
-			};
-
-			soprano.(nextChord[3], duration).play(~clock, quant: 1);
-			alto.(nextChord[2], duration).play(~clock, quant: 1);
-			tenor.(nextChord[1], duration).play(~clock, quant: 1);
-			bass.(nextChord[0], duration).play(~clock, quant: 1);
 			tempo.wait;
 
 			currentChord = nextChord;
