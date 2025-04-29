@@ -13,7 +13,7 @@ s.quit;
 **************************************************************************************/
 
 (
-SynthDef(\sawtone, { |freq = 440, sus = 1|
+SynthDef(\pulsetone, { |freq = 440, sus = 1|
 	var snd = Pulse.ar(freq, 0.1) * Env.linen(0.2, sus, 0.4, 0.2, \sin).ar(Done.freeSelf);
 	Out.ar(0, snd ! 2);
 }).add;
@@ -121,7 +121,7 @@ SynthDef(\sawtone, { |freq = 440, sus = 1|
 			};
 
 			nextChord.do { |note, voiceIndex|
-				Synth(\sawtone, [\freq, note.midicps, \sus, max(duration - 0.4, 0.5)]);
+				Synth(\pulsetone, [\freq, note.midicps, \sus, max(duration - 0.4, 0.5)]);
 			};
 			tempo.wait;
 
