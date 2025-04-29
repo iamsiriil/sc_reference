@@ -65,9 +65,9 @@ SynthDef(\pulsetone, { |freq = 440, atk = 0.2, sus = 0.5, rel = 0.3|
 	nextChord.select { |n| allowedIntervals.includes((n - currentNote).abs) };
 };
 
-~getNextChord = {
+~getNextChords = {
 	arg numVoices, nextChord, validNextChords, validNotes, i;
-	var isValid, result;
+	var isValid;
 
 	if (i == numVoices) {
 		validNextChords.add(nextChord.copy);
@@ -78,7 +78,7 @@ SynthDef(\pulsetone, { |freq = 440, atk = 0.2, sus = 0.5, rel = 0.3|
 
 			isValid = ~noteIsValid.(nextChord, i);
 			if (isValid) {
-				~getNextChord.(numVoices, nextChord, validNextChords, validNotes, (i + 1));
+				~getNextChords.(numVoices, nextChord, validNextChords, validNotes, (i + 1));
 			} {
 				nextChord.put(i, 0);
 			};
@@ -114,7 +114,7 @@ SynthDef(\pulsetone, { |freq = 440, atk = 0.2, sus = 0.5, rel = 0.3|
 					validNotes[j] = ~getValidNotes.(~chordState[\chords][c].select(~rangeIsValid[voices[j]]), currentChord[j]);
 				};
 				validNextChords = Array.new(10);
-				~getNextChord.(currentChord.size, buildChord, validNextChords, validNotes, 0);
+				~getNextChords.(currentChord.size, buildChord, validNextChords, validNotes, 0);
 				~chordState[\lastValidNextChords] = validNextChords;
 				nextChord = validNextChords.choose ?? { currentChord }; // Defaults to current chord if validNextChord is nil.
 				validNextChords = nil;
