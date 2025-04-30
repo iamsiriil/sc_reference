@@ -1,4 +1,22 @@
 (
+~inArray = { |array, element|
+	var isIn;
+
+	array.do { |e|
+		if (e == element) { isIn = true };
+	};
+	if (isIn == true) { true } { false };
+};
+
+~notInArray = { |array, element|
+	var notIn;
+
+	array.do {
+		if (e == element) { notIn = false };
+	};
+	if (notIn == false) { true } { false };
+};
+
 ~rangeIsValid = IdentityDictionary[
 	\spn -> { |note| (note >= 60) && (note <= 81) }, // C4-A5
 	\alt -> { |note| (note >= 55) && (note <= 74) }, // G3-D5
@@ -54,9 +72,9 @@
 			nil;
 		};
 	}
-	{ ((i == numVoices)) } {
+	{ (i == numVoices) } {
 		"Exit #3 | Next Chord: %".format(nextChord).postln;
-		//validNextChords.add(nextChord.copy);
+		validNextChords.add(nextChord.copy);
 		nextChord;
 	};
 	nextChord;
@@ -64,13 +82,13 @@
 )
 
 (
-var nextChord = Array.fill(4, {0});
+var buildChord = Array.fill(4, {0});
 var validNextChord = List.new();
 var validNotes = [[41, 45, 48, 53], [48, 53, 57, 60], [57, 60, 65, 69], [65, 69, 72, 77]];
 var counter = 0;
 
-var out = ~getNC.(4, nextChord, validNextChord, validNotes, 0, counter);
+var out = ~getNC.(4, buildChord, validNextChord, validNotes, 0, counter);
 "~getNC | out: %".format(out).postln;
-
-"Valid Next Chord: %".format(validNextChord).postln;
+~counter = 0;
+"Valid Next Chord: %".format(validNextChord[0]).postln;
 )
