@@ -48,21 +48,16 @@ SynthDef(\tone, {
 )
 
 (
-Synth(\tone)
-)
-
-(
-~clock = TempoClock.new(100/60);
+~clock = TempoClock.new(160/60);
 
 ~taskVoice = { |voiceNotes|
 	Task({
 		voiceNotes.do { |dt, i|
-			var voiceRhym, voiceDur, voiceDurArr;
+			var voiceDur, voiceDurArr;
 			var tempo = 0.5;
 
 			if (dt[0] != nil) {
-				voiceRhym = dt[1];
-				voiceDur = voiceRhym / ~clock.tempo;
+				voiceDur = dt[1] / ~clock.tempo;
 				voiceDurArr = [0.1, 0.4, 0.2].breakAndNormalize(voiceDur).postln;
 
 				Synth(\tone, [
@@ -80,6 +75,4 @@ Synth(\tone)
 };
 ~taskSpn = ~taskVoice.(~evenSpn_00).play(~clock, quant: 1);
 ~taskAlt = ~taskVoice.(~evenAlt_00).play(~clock, quant: 1);
-~taskSpn.play;
-~taskAlt.play;
 )
