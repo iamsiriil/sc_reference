@@ -26,38 +26,35 @@
 	};
 };
 
-// Gets the first valid chord it finds
-~getNC = {
+// Gets all valid chords
+~getNextChords = {
 	arg numVoices, nextChord, validNextChords, validNotes, i;
 
 	if (i == numVoices) {
-		"~getNC | i == numVoices | nextChord: %".format(nextChord).postln;
-		//validNextChords.add(nextChord.copy);
-		^nextChord;
+		validNextChords.add(nextChord.copy);
 	} {
 		validNotes[i].do { |note|
 
 			nextChord.put(i, note);
 
 			if (~noteIsValid.(nextChord, i)) {
-				nextChord = ~getNC.(numVoices, nextChord, validNextChords, validNotes, (i + 1));
-				if (nextChord.notNil){ ^nextChord };
+				~getNextChords.(numVoices, nextChord, validNextChords, validNotes, (i + 1));
 			} {
 				nextChord.put(i, 0);
 			};
 		};
-	    ^nextChord = nil;
-		//^nil;
+		if (validNextChords[0].notNil) { true } { false };
 	};
-}.r;
+};
 )
 
+// Test Function
 (
 var nextChord = Array.fill(4, {0});
-var validNextChord = List.new();
+var validNextChords = List.fill(0, {nil});
 var validNotes = [[41, 45, 48, 53], [48, 53, 57, 60], [57, 60, 65, 69], [65, 69, 72, 77]];
 
-"Routine: %".format(~getNC.value(4, nextChord, validNextChord, validNotes, 0)).postln;
+~getNextChords.(4, nextChord, validNextChords, validNotes, 0);
 
-"Valid Next Chord: %".format(validNextChord).postln;
+"Valid Next Chords: %\nsize: %".format(validNextChords, validNextChords.size).postln;
 )
