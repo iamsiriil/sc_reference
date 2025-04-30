@@ -50,7 +50,9 @@ SynthDef(\tone, {
 (
 ~clock = TempoClock.new(160/60);
 
-~taskVoice = { |voiceNotes|
+~taskVoice = {
+	arg voiceNotes;
+
 	Task({
 		voiceNotes.do { |dt, i|
 			var voiceDur, voiceDurArr;
