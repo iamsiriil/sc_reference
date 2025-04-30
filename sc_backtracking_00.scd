@@ -10,54 +10,67 @@
 
 ~noteIsValid = {
 	arg nextChord, i;
+	var result;
+
+	"~noteIsValid | Function Call | i: %".format(i).postln;
 
 	case
 	{ i == 0 } {
-		~rangeIsValid[\bas].(nextChord[i]);
+		result = (~rangeIsValid[\bas].(nextChord[i]));
 	}
 	{ i == 1 } {
-		~rangeIsValid[\ten].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
+		result = ((~rangeIsValid[\ten].(nextChord[i])) && (~checkVoiceCross.(nextChord[i - 1], nextChord[i])));
 	}
 	{ i == 2 } {
-		~rangeIsValid[\alt].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
+		result = ((~rangeIsValid[\alt].(nextChord[i])) && (~checkVoiceCross.(nextChord[i - 1], nextChord[i])));
 	}
 	{ i == 3 } {
-		~rangeIsValid[\spn].(nextChord[i]) && ~checkVoiceCross.(nextChord[i - 1], nextChord[i]);
+		result = ((~rangeIsValid[\spn].(nextChord[i])) && (~checkVoiceCross.(nextChord[i - 1], nextChord[i])));
 	};
+	result;
 };
 
 // Gets the first valid chord it finds
 ~getNC = {
-	arg numVoices, nextChord, validNextChords, validNotes, i;
+	arg numVoices, nextChord, validNextChords, validNotes, i, counter;
+	var result;
 
-	if (i == numVoices) {
-		"~getNC | i == numVoices | nextChord: %".format(nextChord).postln;
-		//validNextChords.add(nextChord.copy);
-		^nextChord;
-	} {
+	"Recursion #% | i: %".format(counter, i).postln;
+	counter = counter + 1;
+
+	case
+	{ (i < numVoices) && (~inArray.(nextChord, 0)) } {
+
 		validNotes[i].do { |note|
 
 			nextChord.put(i, note);
 
 			if (~noteIsValid.(nextChord, i)) {
-				nextChord = ~getNC.(numVoices, nextChord, validNextChords, validNotes, (i + 1));
-				if (nextChord.notNil){ ^nextChord };
+
+				~getNC.(numVoices, nextChord, validNextChords, validNotes, (i + 1), counter);
 			} {
 				nextChord.put(i, 0);
 			};
+			nil;
 		};
-	    ^nextChord = nil;
-		//^nil;
+	}
+	{ ((i == numVoices)) } {
+		"Exit #3 | Next Chord: %".format(nextChord).postln;
+		//validNextChords.add(nextChord.copy);
+		nextChord;
 	};
-}.r;
+	nextChord;
+};
 )
 
 (
 var nextChord = Array.fill(4, {0});
 var validNextChord = List.new();
 var validNotes = [[41, 45, 48, 53], [48, 53, 57, 60], [57, 60, 65, 69], [65, 69, 72, 77]];
+var counter = 0;
 
-"Routine: %".format(~getNC.value(4, nextChord, validNextChord, validNotes, 0)).postln;
+var out = ~getNC.(4, nextChord, validNextChord, validNotes, 0, counter);
+"~getNC | out: %".format(out).postln;
 
 "Valid Next Chord: %".format(validNextChord).postln;
 )
