@@ -36,6 +36,7 @@ s.plotTree;
 ];*/
 )
 
+// Synth Definition
 (
 SynthDef(\tone, {
 	arg frq = 440, atk = 0.2, sus = 0.5, rel = 0.3;
@@ -45,23 +46,25 @@ SynthDef(\tone, {
 }).add;
 )
 
+// Task Definition
 (
-~clock = TempoClock.new(160/60);
+~clock = TempoClock.new(180/60);
 
 ~taskVoice = {
 	arg voiceNotes;
 
 	Task({
-		voiceNotes.do { |dt, i|
+
+		voiceNotes.do { |event, i|
 			var voiceDur, voiceDurArr;
 			var tempo = 0.5;
 
-			if (dt[0] != nil) {
-				voiceDur = dt[1] / ~clock.tempo;
-				voiceDurArr = [0.1, 0.4, 0.2].breakAndNormalize(voiceDur).postln;
+			if (event[0] != nil) {
+				voiceDur = (event[1] / ~clock.tempo) + rrand(-0.07, 0.07); // rrand(...) Humanizes rhythm pattern.
+				voiceDurArr = [0.2, 0.4, 0.2].breakAndNormalize(voiceDur).postln;
 
 				Synth(\tone, [
-					\frq, dt[0].midicps,
+					\frq, event[0].midicps,
 					\atk, voiceDurArr[0],
 					\sus, voiceDurArr[1],
 					\rel, voiceDurArr[2]
@@ -73,7 +76,10 @@ SynthDef(\tone, {
 		};
 	});
 };
-~taskSpn = ~taskVoice.(~evenSpn_00).play(~clock, quant: 1);
-~taskAlt = ~taskVoice.(~evenAlt_00).play(~clock, quant: 1);
 )
+
+(
+// Playback
+~taskSpn = ~taskVoice.(~evenVoices[0]).play(~clock, quant: 1);
+~taskAlt = ~taskVoice.(~evenVoices[1]).play(~clock, quant: 1);
 )
