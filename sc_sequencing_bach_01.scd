@@ -69,10 +69,8 @@ SynthDef(\tone, {
 					\sus, voiceDurArr[1],
 					\rel, voiceDurArr[2]
 				]);
-				tempo.wait;
-			} {
-				tempo.wait;
 			};
+			tempo.wait;
 		};
 	});
 };
