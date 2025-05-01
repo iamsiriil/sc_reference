@@ -7,7 +7,7 @@ s.plotTree;
 
 (                                                                                                   // BAR
 ~evenVoices = List[[                                                                                // Soprano
-	[69, 2]   , [nil]     , [nil]     , [nil]     , [62, 2]   , [nil]     , [nil]     , [nil]     , // 1
+	[69, 2]   , [nil]     , [nil]     , [nil]     , [62, 2]   , [nil]     , [nil]     , [nil]     , // 1q
 	[65, 2]   , [nil]     , [nil]     , [nil]     , [69, 2]   , [nil]     , [nil]     , [nil]     , // 2
 	[70, 2]   , [nil]     , [nil]     , [nil]     , [69, 1]   , [nil]     , [67, 1]   , [nil]     , // 3
 	[65, 2.5] , [nil]     , [nil]     , [nil]     , [nil]     , [64, 0.5] , [65, 0.5] , [67, 0.5] , // 4
