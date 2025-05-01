@@ -5,8 +5,8 @@ s.plotTree;
 - SEQUENCING BACH 01
 **************************************************************************************************************/
 
-(
-~evenVoices = List[[                                                                                // BAR
+(                                                                                                   // BAR
+~evenVoices = List[[                                                                                // Soprano
 	[69, 2]   , [nil]     , [nil]     , [nil]     , [62, 2]   , [nil]     , [nil]     , [nil]     , // 1
 	[65, 2]   , [nil]     , [nil]     , [nil]     , [69, 2]   , [nil]     , [nil]     , [nil]     , // 2
 	[70, 2]   , [nil]     , [nil]     , [nil]     , [69, 1]   , [nil]     , [67, 1]   , [nil]     , // 3
@@ -14,14 +14,14 @@ s.plotTree;
 	[69, 2.5] , [nil]     , [nil]     , [nil]     , [nil]     , [70, 0.5] , [69, 0.5] , [68, 0.5] , // 5
 	[69, 2.5] , [nil]     , [nil]     , [nil]     , [nil]     , [70, 0.5] , [69, 0.5] , [68, 0.5] , // 6
 	[69, 1]   , [nil]     , [74, 1]   , [nil]     , [65, 1]   , [nil]     , [70, 2]   , [nil]       // 7
-], [
-	[nil]     , [nil]    , [nil]     , [nil]    , [nil]    , [nil]     , [nil]     , [nil]      , // 1
-	[nil]     , [nil]    , [nil]     , [nil]    , [nil]    , [nil]     , [nil]     , [nil]      , // 2
-	[nil]     , [nil]    , [nil]     , [nil]    , [nil]    , [nil]     , [nil]     , [nil]      , // 3
-	[nil]     , [nil]    , [nil]     , [nil]    , [nil]    , [nil]     , [nil]     , [nil]      , // 4
-	[62, 2]   , [nil]    , [nil]     , [nil]    , [57, 2]  , [nil]     , [nil]     , [nil]      , // 5
-	[60, 2]   , [nil]    , [nil]     , [nil]    , [64, 2]  , [nil]     , [nil]     , [nil]      , // 6
-	[65, 2]   , [nil]    , [nil]     , [nil]    , [64, 1]  , [nil]     , [62, 1]   , [nil]        // 7
+], [                                                                                                // Alto
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 1
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 2
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 3
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 4
+	[62, 2]   , [nil]     , [nil]     , [nil]     , [57, 2]   , [nil]     , [nil]     , [nil]     , // 5
+	[60, 2]   , [nil]     , [nil]     , [nil]     , [64, 2]   , [nil]     , [nil]     , [nil]     , // 6
+	[65, 2]   , [nil]     , [nil]     , [nil]     , [64, 1]   , [nil]     , [62, 1]   , [nil]       // 7
 ]];
 
 /*[ // Soprano (...)
