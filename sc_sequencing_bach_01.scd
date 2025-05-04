@@ -51,7 +51,7 @@ SynthDef(\tone, {
 )
 
 // Playback
-(
+(8
 ~taskSpn = ~taskVoice.(~score[0], 0.9).play(~clock, quant: 1);
 ~taskAlt = ~taskVoice.(~score[1], 0.3).play(~clock, quant: 1);
 ~taskTen = ~taskVoice.(~score[2], -0.3).play(~clock, quant: 1);
