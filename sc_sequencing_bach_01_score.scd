@@ -1,13 +1,12 @@
 s.boot;
-s.plotTree;
 
 /**************************************************************************************************************
-- SEQUENCING BACH 01
+- SEQUENCING BACH 01 / SCORE
 **************************************************************************************************************/
 
 // Score
 (                                                                                                   // BAR
-~evenVoices = List[[                                                                                // Soprano
+~score = List[[                                                                                     // Soprano
 	[69, 2]   , nil       , nil       , nil       , [62, 2]   , nil       , nil       , nil       , // 1
 	[65, 2]   , nil       , nil       , nil       , [69, 2]   , nil       , nil       , nil       , // 2
 	[70, 2]   , nil       , nil       , nil       , [69, 1]   , nil       , [67, 1]   , nil       , // 3
@@ -26,7 +25,7 @@ s.plotTree;
 	[64, 1]   , nil       , [76, 1]   , nil       , [72, 2.5] , nil       , nil       , nil       , // 16
 	nil       , [72, 0.5] , [71, 0.5] , [69, 0.5] , [71, 0.5] , [73, 0.5] , [74, 1]   , nil       , // 17
 	[76, 2.5] , nil       , nil       , nil       , nil       , [73, 0.5] , [74, 0.5] , [76, 0.5] , // 18
-	[69, 2]   , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19 / 1
+	[69, 2]   , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19
 
 ], [                                                                                                // Alto
 	nil       , nil       , nil       , nil       , nil       , nil       , nil       , nil       , // 1
@@ -47,7 +46,7 @@ s.plotTree;
 	nil       , nil       , [72, 0.5] , [71, 0.5] , [69, 0.5] , [67, 0.5] , [65, 0.5] , [64, 0.5] , // 16
 	[62, 1]   , nil       , [67, 1.5] , nil       , nil       , [69, 0.5] , [67, 0.5] , [65, 0.5] , // 17
 	[67, 0.5] , [69, 0.5] , [70, 0.5] , [67, 0.5] , [64, 4]   , nil       , nil       , nil       , // 18
-	nil       , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19 / 1
+	nil       , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19
 
 ], [                                                                                                // Tenor
 	nil       , nil       , nil       , nil       , nil       , nil       , nil       , nil       , // 1
@@ -68,7 +67,7 @@ s.plotTree;
 	[57, 2.5] , nil       , nil       , nil       , nil       , [58, 0.5] , [57, 0.5] , [56, 0.5] , // 16
 	[57, 1]   , nil       , [62, 1]   , nil       , [55, 1]   , nil       , [58, 2]   , nil       , // 17
 	nil       , nil       , [52, 1]   , nil       , [57, 1]   , nil       , [55, 1]   , nil       , // 18
-	[53, 2]   , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19 / 1
+	[53, 2]   , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19
 
 ], [                                                                                                // Bass
 	nil       , nil       , nil       , nil       , nil       , nil       , nil       , nil       , // 1
@@ -89,54 +88,6 @@ s.plotTree;
 	[48, 2]   , nil       , nil       , nil       , [52, 2]   , nil       , nil       , nil       , // 16
 	[53, 2]   , nil       , nil       , nil       , [52, 1]   , nil       , [50, 1]   , nil       , // 17
 	[49, 2.5] , nil       , nil       , nil       , nil       , [45, 0.5] , [47, 0.5] , [49, 0.5] , // 18
-	[50, 2]   , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19 / 1
+	[50, 2]   , nil       , nil       , nil       , nil       , nil       , nil       , nil         // 19
 ]];
-)
-
-// Synth Definition
-(
-SynthDef(\tone, {
-	arg frq = 440, atk = 0.2, sus = 0.5, rel = 0.3;
-	var sig = SinOsc.ar(frq, mul: 0.2) * Env.linen(atk, sus, rel, curve: \sin).ar(Done.freeSelf);
-	sig = sig ! 2;
-	Out.ar(0, sig);
-}).add;
-)
-
-// Task Definition
-(
-~clock = TempoClock.new(180/60);
-
-~taskVoice = {
-	arg voiceNotes;
-
-	Task({
-
-		voiceNotes.do { |event, i|
-			var voiceDur, voiceDurArr;
-			var tempo = 0.5;
-
-			if (event != nil) {
-				voiceDur = (event[1] / ~clock.tempo);
-				voiceDurArr = [0.2, 0.4, 0.2].breakAndNormalize(voiceDur).postln;
-
-				Synth(\tone, [
-					\frq, event[0].midicps,
-					\atk, voiceDurArr[0],
-					\sus, voiceDurArr[1],
-					\rel, voiceDurArr[2]
-				]);
-			};
-			tempo.wait;
-		};
-	});
-};
-)
-
-// Playback
-(
-~taskSpn = ~taskVoice.(~evenVoices[0]).play(~clock, quant: 1);
-~taskAlt = ~taskVoice.(~evenVoices[1]).play(~clock, quant: 1);
-~taskTen = ~taskVoice.(~evenVoices[2]).play(~clock, quant: 1);
-~taskBas = ~taskVoice.(~evenVoices[3]).play(~clock, quant: 1);
 )
