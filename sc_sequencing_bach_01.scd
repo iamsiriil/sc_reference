@@ -34,7 +34,7 @@ SynthDef(\tone, {
 
 			if (event != nil) {
 				voiceDur = (event[1] / ~clock.tempo);
-				voiceDurArr = [0.2, 0.4, 0.2].breakAndNormalize(voiceDur).postln;
+				voiceDurArr = [0.2, 0.4, 0.2].breakAndNormalize(voiceDur);
 
 				Synth(\tone, [
 					\frq, event[0].midicps,
