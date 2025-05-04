@@ -38,17 +38,23 @@ s.plotTree;
 	[62, 2.5] , [nil]     , [nil]     , [nil]     , [nil]     , [64, 0.5] , [62, 0.5] , [61, 0.5] , // 12
 	[62, 1]   , [nil]     , [65, 1]   , [nil]     , [61, 1]   , [nil]     , [64, 2]   , [nil]     , // 13
 	[nil]     , [nil]     , [57, 1]   , [nil]     , [62, 2.5] , [nil]     , [nil]     , [nil]       // 14
-]];
 
-/*[ // Soprano (...)
-	[nil]     , [nil]     , [64, 1]   , [nil]     , [69, 1]   , [nil]     , [67, 2]   , [nil]     , // 8
-	[nil]     , [nil]     , [65, 1]   , [nil]     , [70, 3]   , [nil]     , [nil]     , [nil]     , // 9
-	[nil]     , [nil]     , [69, 1]   , [nil]     , [74, 3]   , [nil]     , [nil]     , [nil]     , // 10
-	[nil]     , [nil]     , [72, 1]   , [nil]     , [70, 3]   , [nil]     , [nil]     , [nil]     , // 11
-	[nil]     , [nil]     , [69, 0.5] , [67, 0.5] , [65, 3]   , [nil]     , [nil]     , [nil]     , // 12
-	[nil]     , [77, 0.5] , [76, 0.5] , [74, 0.5] , [76, 0.5] , [77, 0.5] , [79, 0.5] , [76, 0.5] , // 13
-	[81, 2]   , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [69, 1]   , [nil]       // 14
-];*/
+], [                                                                                                // Tenor
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 1
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 2
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 3
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 4
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 5
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 6
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 7
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 8
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 9
+	[nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , [nil]     , // 10
+	[57, 2]   , [nil]     , [nil]     , [nil]     , [50, 2]   , [nil]     , [nil]     , [nil]     , // 11
+	[53, 2]   , [nil]     , [nil]     , [nil]     , [57, 2]   , [nil]     , [nil]     , [nil]     , // 12
+	[58, 2]   , [nil]     , [nil]     , [nil]     , [57, 1]   , [nil]     , [55, 1]   , [nil]     , // 13
+	[53, 2.5] , [nil]     , [nil]     , [nil]     , [nil]     , [52, 0.5] , [53, 0.5] , [55, 0.5]   // 14
+]];
 )
 
 // Synth Definition
@@ -95,4 +101,5 @@ SynthDef(\tone, {
 (
 ~taskSpn = ~taskVoice.(~evenVoices[0]).play(~clock, quant: 1);
 ~taskAlt = ~taskVoice.(~evenVoices[1]).play(~clock, quant: 1);
+~taskAlt = ~taskVoice.(~evenVoices[2]).play(~clock, quant: 1);
 )
