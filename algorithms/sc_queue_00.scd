@@ -5,7 +5,7 @@ s.boot;
 **************************************************************************************************************/
 
 (
-~queue = { |maxSize|
+~createQueue = { |maxSize|
 	var queue = (
 		\list: List.new(maxSize),
 		\maxSize: maxSize
@@ -33,15 +33,4 @@ s.boot;
 };
 
 ~clearQueue = { |array| array.clear };
-)
-
-(
-~q = ~queue.(16);
-"queue size: %".format(~q[\list].size).postln;
-
-(1..10).do { |n| ~enqueue.(~q, n); };
-~q.postln;
-
-5.do { ~dequeue.(~q).postln; };
-~q.postln;
 )
