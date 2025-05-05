@@ -53,10 +53,92 @@ SynthDef(\tone, {
 
 	if (score[\curIndex] == score[\maxIndex]) { score[\endOfScore] = true };
 };
+
+~clock = TempoClock.new(180/60);
+
+~t = { |queue, score|
+
+	Task({
+		var chord, tempo = 2.5;
+		var dur, durArray;
+
+		while { score[\endOfScore] == false } {
+
+			~fillQueue.(queue, score);
+
+			while { queue[\list].size > 8 } {
+
+				chord = ~dequeue.(queue);
+
+				~spn = Task({
+					if (chord[3] != nil) {
+						dur = chord[3][1] / ~clock.tempo;
+						durArray = [0.2, 0.5, 0.3].breakAndNormalize(dur);
+
+						Synth(\tone, [
+							\freq, chord[3][0].midicps,
+							\atk, durArray[0],
+							\sus, durArray[1],
+							\rel, durArray[2]
+						]);
+					};
+					tempo.wait;
+				});
+				~alt = Task({
+					if (chord[2] != nil) {
+						dur = chord[2][1] / ~clock.tempo;
+						durArray = [0.2, 0.5, 0.3].breakAndNormalize(dur);
+
+						Synth(\tone, [
+							\freq, chord[2][0].midicps,
+							\atk, durArray[0],
+							\sus, durArray[1],
+							\rel, durArray[2]
+						]);
+					};
+					tempo.wait;
+				});
+				~ten = Task({
+					if (chord[1] != nil) {
+						dur = chord[1][1] / ~clock.tempo;
+						durArray = [0.2, 0.5, 0.3].breakAndNormalize(dur);
+
+						Synth(\tone, [
+							\freq, chord[1][0].midicps,
+							\atk, durArray[0],
+							\sus, durArray[1],
+							\rel, durArray[2]
+						]);
+					};
+					tempo.wait;
+				});
+				~bas = Task({
+					if (chord[0] != nil) {
+						dur = chord[0][1] / ~clock.tempo;
+						durArray = [0.2, 0.5, 0.3].breakAndNormalize(dur);
+
+						Synth(\tone, [
+							\freq, chord[0][0].midicps,
+							\atk, durArray[0],
+							\sus, durArray[1],
+							\rel, durArray[2]
+						]);
+					};
+					tempo.wait;
+				});
+
+				~spn.play(~clock);
+				~alt.play(~clock);
+				~ten.play(~clock);
+				~bas.play(~clock);
+				tempo.wait;
+
+			};
+		};
+	});
+}
 )
 
-// Test fillQueue function
-(
-~fillQueue.(~q, ~fugueBach);
-~q[\list][0];
-)
+
+~t.(~q, ~fugueBach).play(~clock);
+
