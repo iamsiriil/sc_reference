@@ -1,6 +1,12 @@
 s.boot;
 s.quit;
 
+// Load project files
+(
+"./sc_harmony_01_utils.scd".loadRelative;
+"./sc_harmony_01_tests.scd".loadRelative;
+"./sc_harmony_01_lib.scd".loadRelative;
+)
 /**************************************************************************************
 - HARMONY 01
 
@@ -22,3 +28,93 @@ GOALS:
 - Accept chords and durations as input [['c', 2], ['f', 1], ['g', 1], ['c', 4]], with durations in beats
 - getNextChord returns only the first valid chord to reduce computational overhead
 **************************************************************************************/
+
+// -> SynthDef
+
+// -> Chord manager structure
+(
+~chordState = Dictionary({
+	\currChord->Array.new();
+	\nextChord->Array.new();
+	\chordList->Dictionary.new();
+	\validNotes->
+	\validChords->
+});
+)
+
+(
+~clock = TempoClock.new(120/60);
+
+~t = { |chordProg, firstChord = nil|
+	var nextChord, chordList
+
+	// 1. Get all necessary chords for chordProg
+	chordList = ~getChords.(chordProg);
+
+	// 2. Check whether a first chord was passed as argument
+	//    if not, generate first chord
+	if (firstChord != nil) {
+		nextChord = fistChord
+	} {
+		nextChord = ~generateChord.(chordProg[0], chordList);
+	};
+
+	// 3. Initiate task
+	Task({
+	var tempo = 2.5;
+
+		chordProg.do({ |c, i|
+
+			// 3.1. If i == 0, send next chord to play
+			if (i == 0) {
+				nextChord;
+			} {
+				// else get valid notes and send to ~getNextChords
+				~getNextChords.(currChord, nextChord, validNotes, 0);
+			};
+
+			// Play SATB
+			Synth();
+			Synth();
+			Synth();
+			Synth();
+			tempo.wait;
+
+			currChord = nextChord;
+		});
+
+	});
+};
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
