@@ -2,8 +2,27 @@ s.boot;
 s.quit;
 
 /**************************************************************************************
-- HARMONY 01 / Utility Functions
+- HARMONY 01 / Utility Functions and Data Structures
 **************************************************************************************/
+
+(
+~numVoices = 4;
+~voiceNames = ["Bass", "Ten", "Alt", "Spn"];
+
+// Data structure containing the state of chords as they're built and played'
+~chordState = (
+	\currChord,
+	\nextChord,
+	\validNotes,
+	\collectValidChords
+);
+
+// Cata structure containing sets of necessary chords and the chord progression to be played
+~chords = (
+	\range,
+	\progretion,
+);
+)
 
 (
 // ~getMIDINoteNames -> Takes a sequence of midi numbers and returns the corresponting
@@ -17,48 +36,4 @@ s.quit;
 ~getMIDINoteNamesOct = { |notes|
 	notes.collect { |note| ~midiRange[\octave][note] };
 };
-/*
--> Other utility function
-
--> isRoot, isThird, isFifth:
-
-type - type of interval (Major, Minor, Perfect, etc.)
-chordName - Name of chord being expressed (Gm, CM, Dd, etc.)
-context - Array of midi notes (range, chord, scale, etc.)
-note - note of which the degree is to be determined (M3, P5, Rt, d5, etc.)
-
-return -> true / false
-*/
-
-~isRoot = { |chordName, context, note| };
-
-~isThird = { |type, chordName, context, note|
-	switch (type)
-	//{ "d" } {  }
-	{ 'm' } {  }
-	{ 'M' } {  }
-	//{ "A" } {  }
-};
-
-~isFifth = { |type, chordName, context, note|
-	switch (type)
-	{ 'd' } {  }
-	{ 'P' } {  }
-	{ 'A' } {  }
-};
-
-/*
--> resolveInharmonics
-
-chordName - Name of chord being expressed
-context - Array of midi notes
-
-return -> corresponding array with note names with inharmonics resolved
-E.g.: [B, D#, G] -> [B, D#, F##] : B Augmented triad
-*/
-
-~resolveInharmonics = { |chordName, context| };
 )
-
-~a = ~getMIDINoteNamesOct.(~chords[\Cd][0]);
-~s = ~getMIDINoteNames.(~chords[\Cd][0]);

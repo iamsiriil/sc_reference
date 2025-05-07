@@ -2,39 +2,12 @@ s.boot;
 s.quit;
 
 /**************************************************************************************
-- HARMONY 01 /
+- HARMONY 01 / Backtracking
 **************************************************************************************/
 
+
 (
-~chordState = (
-	\currChord,
-	\nextChord,
-	\validNotes,
-	\collectValidChords
-);
-
-~chordIsValid = { |currentChord, nextChord|
-
-};
-
-~count = 0;
-~toggleRules = {
-	switch (~count)
-	{ 0 } { ~enforceRootPosition == false }
-	{ 1 } { ~enforceDuplicateRoot == false }
-	{ 2 } {
-		~enforceParallelFifths == false;
-		~enforceParallelOctave == false;
-	}
-	~count = ~count + 1;
-};
-
-~resetRules = {
-	if (~enforceRootPosition == false)   { ~enforceRootPosition == true };
-	if (~enforceRootDuplicat == false)   { ~enforceRootDuplicat == true };
-	if (~enforceParallelFifths == false) { ~enforceParallelFifths == true };
-	if (~enforceParallelOctave == false) { ~enforceParallelOctave == true };
-};
+~chordIsValid = { |currentChord, nextChord|};
 
 ~getNextChords = { | currChord, nextChord, validChords, validNotes, i|
 

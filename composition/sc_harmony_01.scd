@@ -8,7 +8,7 @@ s.quit;
 "./sc_harmony_01_lib.scd".loadRelative;
 )
 /**************************************************************************************
-- HARMONY 01
+- HARMONY 01 / Main
 
 GOALS:
 - Prohibit parallel fifths and octaves between voices
