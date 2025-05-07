@@ -70,6 +70,11 @@ GOALS:
 				nextChord;
 			} {
 				// else get valid notes and send to ~getNextChords
+
+				// -> Get valid notes
+				// -> Map chord degrees
+				// -> Assert whether there are common tones
+				//        -> If so, flag corresponding voices
 				~getNextChords.(currChord, nextChord, validNotes, 0);
 			};
 

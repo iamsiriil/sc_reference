@@ -1,13 +1,21 @@
 /*
 DATA STRUCTURES
 
--> chordProg     Array
--> firstChord    Array
--> currentChord  Array
--> nextChord     Array
+-> chordProg            Array
+-> firstChord           Array
+-> currentChord         Array
+-> nextChord            Array
 
--> chordList     Dictionary / OrderedIdentitySet
--> validNotes    Set
+-> chordList            Dictionary / OrderedIdentitySet
+-> validNotes           Set
+
+************************************************************
+CLASS VARIABLES
+
+numVoices               4 (default SATB)
+
+midiRange               [0..127]
+voiceRanges             [[B], [T], [A], [S]]
 
 ************************************************************
 FLAGS
@@ -28,18 +36,33 @@ enforceDuplicat3Degree  true/false
 enforceParallelFifths   true/false
 enforceParallelOctaves  true/False
 
+enforceVoiceSpacing     true/false
+
+************************************************************
+RULE HIERARCHY
+
+
 */
 
 // Dictionary
 (
-~d = Dictionary[
-	\a->[1, 2, 3],
-	\b->[4, 5, 6]
+~d = TwoWayDictionary[
+	2->"Rt",
+	1->"P5",
+	3->"m3"
 ];
 )
-~d.class;
+~d[2]
+
+~d.order.do { |a| a.postln; };
+
+~twd = TwoWayDictionary[]
 
 // Sets
 ~set = Set[];
 ~iSet = IdentitySet[];
 ~oISet = OrderedIdentitySet[];
+
+~set = (0..127).as(OrderedIdentitySet);
+~bass = ~set.select { |n| (n > 45) && (n < 67)}
+~set = OrderedIdentitySet
