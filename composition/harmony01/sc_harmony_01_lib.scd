@@ -9,7 +9,7 @@
     'Cd'->  Dictionary[
 		\notes -> OrderedIdentitySet[0, 3, 6, 12, 15, 18, 24, 27, 30, 36, 39, 42, 48, 51, 54, 60, 63, 66, 72, 75, 78, 84, 87, 90, 96, 99, 102, 108, 111, 114, 120, 123, 126],
 		\names -> OrderedIdentitySet["C", "Eb", "Gb"],
-		\degree -> ["Rt", "m3", "d5"]
+		\degree -> OrderedIdentitySet["Rt", "m3", "d5"]
 	],
 ];
 // // C minor: C, Eb, G
