@@ -151,7 +151,7 @@
 )
 
 /*************************************************************************************************************************/
-// Final check before chord gets added to validNextChord array
+// Final check8 before chord gets added to validNextChord array
 (
 ~chordIsValid = { |currChord, nextChord, numVoices|
 	(
