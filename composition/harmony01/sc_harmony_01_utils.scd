@@ -9,17 +9,21 @@ s.quit;
 ~voices = Dictionary[
 	\numVoices -> 4,
 	\voiceRange -> [[40, 60], [48, 67], [55, 74], [60, 81]],
+	\validIntervals -> [[], [], [], []],
 	\voiceNames -> ["Bass", "Ten", "Alt", "Spn"]
 ];
 
 // Cata structure containing sets of necessary chords and the chord progression to be played
-~chordData = [
-	\chords ->
+~chordData = Dictionary[
+	\chords -> Dictionary[
+		\Cm -> OrderedIdentitySet[[0, "Rt"]...]
+	],
 	\progretion ->
+	\nextChord ->
 ];
 
 // Data structure containing the state of chords as they're built and played'
-~chordState = [
+~chordState = Dictionary[
 	\currChord ->
 	\nextChord ->
 	\validNotes ->

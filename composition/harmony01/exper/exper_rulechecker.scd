@@ -1,12 +1,38 @@
 // Test fixtures
 (
-~currChord00   = [[41, 53, 60, 69], [41, 57, 65, 72], [41, 57, 60, 65], [43, 52, 64, 71], [43, 52, 59, 64], [40, 55, 60, 72]];
-~nextChord00PO = [[48, 60, 64, 67], [48, 55, 72, 76], [48, 55, 64, 72], [40, 55, 67, 72], [48, 55, 64, 67], [48, 57, 65, 77]];
+// Test parallel octaves
+~currChordPO = [[41, 53, 60, 69], [41, 57, 65, 72], [41, 57, 60, 65], [43, 52, 64, 71], [43, 52, 59, 64], [40, 55, 60, 72]];
+~nextChordPO = [[48, 60, 64, 67], [48, 55, 72, 76], [48, 55, 64, 72], [40, 55, 67, 72], [48, 55, 64, 67], [48, 57, 65, 77]];
+//~nectChordPOValid =
 ~octavesAt     = [[[0, 1], true]  , [[0, 2], true]  , [[0, 3], true]  , [[1, 2], true]  , [[1, 3], true]  , [[2, 3], true] ];
+
+// Test parallel fifths
+
+/*~currChordPF
+~nextChordPF
+~nextChordPFValid
+~fifthsAt*/
+
+~chordData = Dictionary[
+	\chords -> Dictionary[
+		\Cm -> OrderedIdentitySet[[0, "Rt"], [3, "m3"], [7, "P5"], [12, "Rt"], [15, "m3"], [19, "P5"], [24, "Rt"], [27, "m3"], [31, "P5"], [36, "Rt"], [39, "m3"], [43, "P5"], [48, "Rt"], [51, "m3"], [55, "P5"], [60, "Rt"], [63, "m3"], [67, "P5"], [72, "Rt"], [75, "m3"], [79, "P5"], [84, "Rt"], [87, "m3"], [91, "P5"], [96, "Rt"], [99, "m3"], [103, "P5"], [108, "m3"], [111, "P5"], [115, "Rt"], [120, "m3"], [123, "P5"], [127, "Rt"]]
+	],
+	\progretion -> ['Cm'],
+	\nextHarmony -> 'Cm'
+];
+
+~enforceRootDuplicat = true;
+~nextChordRD = [48, 60, 63, 67]; // Duplicate root
+~nextChord3D = [48, 63, 67, 75]; // Duplicate third
+~nextChord5D = [48, 55, 63, 67]; // Duplicate fifth
 )
+
+~chordData[\nextHarmony]
+
 
 /*************************************************************************************************************************/
 // Check range between voices
+// I can test voice crossing by enforcing a lower bound: 0 no voice crossing; < 0 voice crossing
 (
 ~checkRange = { |nextChord, i|
 	if (i == 1) {
@@ -75,3 +101,53 @@
 )
 
 /*************************************************************************************************************************/
+// Check root duplication
+(
+~checkRootDuplicat = { |nextChord|
+	var chord, chordDegree, numRoot;
+
+	if (~enforceRootDuplicat == true) {
+		chord = ~chordData[\chords][~chordData[\nextHarmony]];
+		chordDegree = chord.select({ |item|
+			(item[0] == nextChord[0]) ||
+			(item[0] == nextChord[1]) ||
+			(item[0] == nextChord[2]) ||
+			(item[0] == nextChord[3])
+		});
+		numRoot = chordDegree.select({ |item|
+			item[1] == "Rt";
+		});
+		if (numRoot.size == 2) { true } { false }
+	};
+};
+// Test root duplicate
+~checkRootDuplicat.(~nextChordRD);
+)
+
+/*************************************************************************************************************************/
+// Get valid notes and enforce common tone in same voice
+(
+~getValidNotes = { |nextChord|
+	...
+	if (~enforceCommonTone == true)
+
+};
+)
+
+/*************************************************************************************************************************/
+
+Set[[12, "a"], [45, "b"], [61, "c"], [32, "d"]].collect({ |n| n[1]})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
