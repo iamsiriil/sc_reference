@@ -26,7 +26,7 @@ s.quit;
 	],
 	// Number of voices
 	\numVoices -> 4,
-	// refference names for each of the voices
+	// Reference names for each of the voices
 	\voiceNames -> ["bas", "ten", "alt", "spn"]
 ];
 
