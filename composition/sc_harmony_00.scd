@@ -61,7 +61,7 @@ SynthDef(\pulsetone, { |freq = 440, atk = 0.2, sus = 0.5, rel = 0.3|
 
 ~getValidNotes = {
 	arg nextChord, currentNote;
-	var allowedIntervals = [0, 1, 2, 3, 4, 5, 7];
+	var allowedIntervals = [0, 1, 2, 3, 4, 5, 7, 8, 9, 12];
 	nextChord.select { |n| allowedIntervals.includes((n - currentNote).abs) };
 };
 
