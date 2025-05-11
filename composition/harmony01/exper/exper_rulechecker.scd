@@ -48,20 +48,24 @@
 /*************************************************************************************************************************/
 // Check for parallel octaves
 (
-~checkParallelOct = { |cChord, nChord, cSize|
-	var index;
+~checkParallelOct = { |currChord, nextChord, numVoices|
+	var idx;
 	var octaves = [12, 24, 36, 48, 60];
 
-	for (0, (cSize - 2)) { |i|
+	for (0, (numVoices - 2)) { |i|
 
-		for (1, (cSize - 1)) { |j|
+		for (1, (numVoices - 1)) { |j|
 
 			octaves.do { |oct|
-				if ((cChord[j] - cChord[i]) == oct) { index = [i, j] };
+				if ((currChord[j] - currChord[i]) == oct) { idx = [i, j] };
 			};
 		};
 	};
-	[index, (cChord[index[1]] - cChord[index[0]]) == (nChord[index[1]] - nChord[index[0]])];
+	[
+		index,
+		(currChord[idx[1]] - currChord[idx[0]]) ==
+		(nextChord[idx[1]] - nextChord[idx[0]])
+	];
 };
 // Test two chords
 ~checkParallelOct.(~currChordOctP[0], ~nextChordOctP[0], 4) == ~octavesAt[0]
@@ -87,12 +91,14 @@
 
 			fifths.do { |n|
 				if ((currChord[j] - currChord[i]) == n) { idx = [i, j] };
+
 			};
 		};
 	};
 	[
 		idx,
-		(currChord[idx[1]] - currChord[idx[0]]) == (nextChord[idx[1]] - nextChord[idx[0]])
+		(currChord[idx[1]] - currChord[idx[0]]) ==
+		(nextChord[idx[1]] - nextChord[idx[0]])
 	];
 };
 // Test two chords
@@ -107,6 +113,7 @@
 	var chord, chordDegree, numRoot;
 
 	if (~enforceRootDuplicat == true) {
+
 		chord = ~chordData[\chords][~chordData[\nextHarmony]];
 		chordDegree = chord.select({ |item|
 			(item[0] == nextChord[0]) ||
@@ -117,7 +124,9 @@
 		numRoot = chordDegree.select({ |item|
 			item[1] == "Rt";
 		});
-		if (numRoot.size == 2) { true } { false }
+		(numRoot.size > 1);
+	} {
+		true;
 	};
 };
 // Test root duplicate
@@ -127,6 +136,13 @@
 /*************************************************************************************************************************/
 // Get valid notes and enforce common tone in same voice
 (
+// In harmony_00
+~getValidNotes = {
+	arg nextChord, currentNote;
+	var allowedIntervals = [0, 1, 2, 3, 4, 5, 7];
+	nextChord.select { |n| allowedIntervals.includes((n - currentNote).abs) };
+};
+
 ~getValidNotes = { |nextChord|
 	...
 	if (~enforceCommonTone == true)
@@ -135,18 +151,28 @@
 )
 
 /*************************************************************************************************************************/
+// Final check before chord gets added to validNextChord array
 (
 ~chordIsValid = { |currChord, nextChord, numVoices|
 	(
-		~checkRootDuplicat.(nextChord) &&
-		~checkParallelOct.(currChord, nextChord, numVoices) &&
-		~checkParallel5th.(currChord, nextChord, numVoices)
+		(
+			if (~enforceRootDuplicat == true) {
+				~checkRootDuplicat.(nextChord)
+			} { true }
+		) &&
+		(
+			if (~enforceParallelOct == true) {
+				~checkParallelOct.(currChord, nextChord, numVoices)
+			} { true }
+		) &&
+		(
+			if (~enforceParallel5th == true) {
+				~checkParallel5th.(currChord, nextChord, numVoices)
+			} { true }
+		)
 	)
-
 };
 )
-
-
 
 
 

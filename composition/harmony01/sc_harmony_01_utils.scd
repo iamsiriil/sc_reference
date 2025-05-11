@@ -18,10 +18,11 @@ s.quit;
 	],
 	// Allowed melodic intervals
 	\validIntervals -> Dictionary[
-		\bas -> [],
-		\ten -> [],
-		\alt -> [],
-		\spn -> []
+		// All except tritone and sevenths. Spn, alt and ten, one octave. Bass, two
+		\bas -> [0, 1, 2, 3, 4, 5, 7, 8, 9, 12, 13, 14,15, 16, 17, 19, 20, 21, 24],
+		\ten -> [0, 1, 2, 3, 4, 5, 7, 8, 9, 12],
+		\alt -> [0, 1, 2, 3, 4, 5, 7, 8, 9, 12],
+		\spn -> [0, 1, 2, 3, 4, 5, 7, 8, 9, 12]
 	],
 	// Number of voices
 	\numVoices -> 4,
