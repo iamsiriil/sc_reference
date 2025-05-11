@@ -135,8 +135,18 @@
 )
 
 /*************************************************************************************************************************/
+(
+~chordIsValid = { |currChord, nextChord, numVoices|
+	(
+		~checkRootDuplicat.(nextChord) &&
+		~checkParallelOct.(currChord, nextChord, numVoices) &&
+		~checkParallel5th.(currChord, nextChord, numVoices)
+	)
 
-Set[[12, "a"], [45, "b"], [61, "c"], [32, "d"]].collect({ |n| n[1]})
+};
+)
+
+
 
 
 
