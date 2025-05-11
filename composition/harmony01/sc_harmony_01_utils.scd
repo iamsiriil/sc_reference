@@ -33,18 +33,18 @@ s.quit;
 // Data structure containing sets of necessary chords and the chord progression to be played
 ~chordData = Dictionary[
 	\chords -> Dictionary[
-		\Cm -> OrderedIdentitySet[[0, "Rt"]...]
+		\Cm -> OrderedIdentitySet[[0, "Rt"]...] // Example
 	],
-	\progretion ->
-	\nextChord ->
+	\progretion -> nil,
+	\nextCipher -> nil
 ];
 
 // Data structure containing the state of chords as they're built and played'
 ~chordState = Dictionary[
-	\currChord ->
-	\nextChord ->
-	\validNotes ->
-	\collectValidChords ->
+	\currChord -> Array.new(),
+	\nextChord -> Array.fill(4, {0}),
+	\validNotes ->  OrderedIdentitySet.fill(4, {[]}),
+	\nextValidChords -> OrderedIdentitySet.fill(50, {[]})
 ];
 )
 
