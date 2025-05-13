@@ -154,7 +154,7 @@
 		(item[0] == nextChord[2]) ||
 		(item[0] == nextChord[3])
 	});
-	//chordDegree.postln;
+
 	case
 	{ ~enforceRootDuplicate == true } {
 		(chordDegree.count({ |item| item[1] == "Rt" }) == 2)       &&
@@ -172,8 +172,10 @@
 		(chordDegree.count({ |item| item[1].contains("5") }) == 2)
 	}
 };
-// Enforcement flags: 1 true to 2 false
+
 ~enforceNoteDuplicate = true;
+
+// Enforcement flags: 1 true to 2 false
 ~enforceRootDuplicate = false;
 ~enforceThirdDuplicate = true;
 ~enforceFifthDuplicate =  false;
@@ -228,7 +230,6 @@
 
 /*************************************************************************************************************************/
 // Toggle rules
-
 (
 ~toggleCount = 0;
 
@@ -241,7 +242,13 @@
 };
 )
 
+/*************************************************************************************************************************/
+// Reset rules
+(
+~resetRules = {
 
+};
+)
 
 
 
