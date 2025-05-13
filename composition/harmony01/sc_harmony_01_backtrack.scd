@@ -5,10 +5,8 @@ s.quit;
 - HARMONY 01 / Backtracking
 **************************************************************************************/
 
-
+// Backtracking function to build the chords
 (
-~chordIsValid = { |currentChord, nextChord|};
-
 ~getNextChords = { | currChord, nextChord, validChords, validNotes, i|
 
 	if (i == numVoices && ~chordIsValid.(currChord, nextChord)) {
