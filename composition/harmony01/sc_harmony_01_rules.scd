@@ -180,12 +180,9 @@ s.quit;
 (
 ~resetRules = {
 	~enforceVoiceCrossProhibition = true;
-
 	~enforceParallelOctaves       = true;
 	~enforceParallelFifths        = true;
-
 	~enforceNoteDuplicate         = true;
-	// Enforcement flags: 1 true to 2 false
 	~enforceRootDuplicate         = true;
 	~enforceThirdDuplicate        = false;
 	~enforceFifthDuplicate        = false;

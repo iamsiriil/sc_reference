@@ -155,7 +155,7 @@
 		(item[0] == nextChord[3])
 	});
 
-	case
+	ocase
 	{ ~enforceRootDuplicate == true } {
 		(chordDegree.count({ |item| item[1] == "Rt" }) == 2)       &&
 		(chordDegree.count({ |item| item[1].contains("3") }) == 1) &&
