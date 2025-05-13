@@ -73,6 +73,68 @@ s.boot;
 ~chordState[\currChord] = ~currChord[0];
 ~chordState[\nextHarm] = ~chordProg[1][0];
 
+~getChordVocalRange = { |voices, nextHarm|
+	var chordRanges = Array.fill(4, {[]});
+	//var validInterv = Array.fill(4, {[]});
+
+	voices.do { |v, i|
+		chordRanges[i] = ~chordData[\chords][nextHarm].select { |n|
+			(n[0] >= ~voiceData[\voiceRange][v][0]) &&
+			(n[0] <= ~voiceData[\voiceRange][v][1])
+		};
+	};
+	chordRanges;
+};
+
+~vRange = ~getChordVocalRange.(~voiceData[\voiceNames], ~chordState[\nextHarm]);
+)
+
+(
+~testArray = Array.fill(4, {[]});
+
+~vRange.do { |r, i|
+		~testArray[i] = r.select { |n|
+		~voiceData[\validIntervals][~voiceData[\voiceNames][i]].includes((n[0] - ~currChord[0][i]).abs);
+		}
+	};
+)
+~testArray[3];
+
+(
+~testArray2 = Array.fill(4, {[]});
+
+~currChord[0].do { |r, i|
+	~testArray2[i] = ~testArray[i].collect { |n|
+		n[0] == r;
+	};
+};
+)
+~testArray2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(
+var i = 2;
+~vRange[i].postln;
+~test[i].postln;
+)
+nextChord.select { |n| allowedIntervals.includes((n - currentNote).abs) };
+
+
+
+(
 ~getValidNotes = {
 	var chordB, chordT, chordA, chordS;
 	var nextHarm = ~chordData[\nextHarm];
@@ -81,21 +143,6 @@ s.boot;
 };
 ~getValidNotes.();
 )
-
-(
-var chordB, chordT, chordA, chordS;
-var nextHarm = ~chordState[\nextHarm];
-
-~chordData[\chords][nextHarm].select { |n| (n[0] >= ~voiceData[\voiceRange][\bas][0]) && (n[0] <= ~voiceData[\voiceRange][\bas][1]) };
-)
-~chordData[\chords][]
-
-
-
-
-
-
-
 
 
 
