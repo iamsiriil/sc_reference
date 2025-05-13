@@ -29,12 +29,20 @@
 // I can test voice crossing by enforcing a lower bound: 0 no voice crossing; < 0 voice crossing
 (
 ~checkRange = { |nextChord, i|
-	if (i == 1) {
-		(nextChord[i] - nextChord[i - 1]) <= 24;
+	var cross, n;
+	var voice = ~voiceData[\voiceNames][i];
+
+	n = (nextChord[i] - nextChord[i - 1]);
+	cross = if (~enforceVoiceCrossProhibition = true) {
+		(n >= 0)
+	} {
+		(n < 0) && (nextChord[i] >= ~voiceData[\voiceRange][voice][0])
 	};
-	if ((i == 2) && (i == 3)) {
-		(nextChord[i] - nextChord[i - 1]) <= 12;
-	};
+
+	switch(i)
+	{ 1 } { cross && (n <= 24) }
+	{ 2 } { cross && (n <= 12) }
+	{ 3 } { cross && (n <= 12) }
 };
 ~checkRange.(~nextChord[0], 2);
 )
@@ -203,3 +211,37 @@
 	)
 };
 )
+
+/*************************************************************************************************************************/
+// Toggle rules
+
+(
+~toggleCount = 0;
+
+~toggleRules = { |count|
+	switch (count)
+	{ 0 } {}
+	{ 1 } {}
+	{ 2 } {}
+	{ 3 }
+};
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

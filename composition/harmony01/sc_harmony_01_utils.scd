@@ -27,7 +27,7 @@ s.quit;
 	// Number of voices
 	\numVoices -> 4,
 	// Reference names for each of the voices
-	\voiceNames -> ["bas", "ten", "alt", "spn"]
+	\voiceNames -> ['bas', 'ten', 'alt', 'spn']
 ];
 
 // Data structure containing sets of necessary chords and the chord progression to be played
