@@ -40,9 +40,11 @@ s.quit;
 		{ (i == 0) && (~enforceFirstInversion == true) && (n[1].contains("5")) } {
 			nextChord[i] = n[0];
 			~getNextChord.();
+		}
+		{
+			nextChord[i] = n[0];
 		};
 
-		nextChord[i] = n[0];
 		if (i > 0 && ~checkVocalRange.(nextChord, n[0], i)) {
 			~getNextChord.();
 		} {

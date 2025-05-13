@@ -32,9 +32,7 @@ s.quit;
 
 // Data structure containing sets of necessary chords and the chord progression to be played
 ~chordData = Dictionary[
-	\chords -> Dictionary[
-		\Cm -> OrderedIdentitySet[[0, "Rt"]...] // Example
-	],
+	\chords -> nil,
 	\progretion -> nil,
 	\nextCipher -> nil
 ];
