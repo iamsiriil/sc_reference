@@ -7,18 +7,20 @@ s.quit;
 
 // Flags
 (
-~enforceVoiceCrossProhibition = true;
+~enforceVoiceCrossProhibition = true;  // Enforced in function ~checkVoiceRange, during backtrack
+~enforceVocalRange            = true;  // Enforced in function ~getValidNotes, before backtrack
 
-~enforceParallelOctaves       = true;
-~enforceParallelFifths        = true;
+~enforceParallelOctaves       = true;  // Enforced in function ~chordIsValid, during backtrack
+~enforceParallelFifths        = true;  // Enforced in function ~chordIsValid, during backtrack
 
-~enforceNoteDuplicate         = true;
-// Enforcement flags: 1 true to 2 false
-~enforceRootDuplicate         = true;
-~enforceThirdDuplicate        = false;
-~enforceFifthDuplicate        = false;
+~enforceNoteDuplicate         = true;  // Enforced in function ~chordIsValid, during backtrack
 
-~enforceCommonTone            = true;
+// Note duplication enforcement flags: 1 true to 2 false
+~enforceRootDuplicate         = true;  // Enforced in function ~checkNoteDuplicate, during backtrack
+~enforceThirdDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
+~enforceFifthDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
+
+~enforceCommonTone            = true;  // Enforced in function ~getValidNotes, before backtrack
 )
 
 /*************************************************************************************/
