@@ -75,7 +75,6 @@ s.boot;
 
 ~getChordVocalRange = { |voices, nextHarm|
 	var chordRanges = Array.fill(4, {[]});
-	//var validInterv = Array.fill(4, {[]});
 
 	voices.do { |v, i|
 		chordRanges[i] = ~chordData[\chords][nextHarm].select { |n|
@@ -89,6 +88,8 @@ s.boot;
 ~vRange = ~getChordVocalRange.(~voiceData[\voiceNames], ~chordState[\nextHarm]);
 )
 
+/*************************************************************************************/
+// Tests
 (
 ~testArray = Array.fill(4, {[]});
 
@@ -111,10 +112,24 @@ s.boot;
 )
 ~testArray2
 
+(
+~b = ~voiceData[\voiceRange][\bas];
+~bSet = OrderedIdentitySet.newFrom((~b[0]..~b[1]));
+
+~cM = ~triads[\CM][\notes].as(OrderedIdentitySet);
+~nt = ~currChord[0][0];
+~nSet = OrderedIdentitySet.new();
+~nSet.add(~nt);
+~cM & ~bSet & ~nSet;
+)
 
 
+Set.newFrom((1..12))
+Set[4, 6, 45, 61, -2] & (1..12).asSet
 
+~range = (~voiceData[\voiceRange][\spn][0]..~voiceData[\voiceRange][\spn][1]).as(OrderedIdentitySet);
 
+~range & Set[67, 65, 23, 45]
 
 
 
