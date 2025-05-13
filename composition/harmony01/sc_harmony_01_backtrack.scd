@@ -13,34 +13,42 @@ s.quit;
 
 	if (i == numVoices && ~chordIsValid.(currChord, nextChord, numVoices)) {
 		validChords.add(nextChord.copy);
+		~resetRules;
 	} {
 		~toggleRules;
 		i = 0;
 	};
 
 	// Enforces common tone on the same voice
-	if (~enforceRootPosition == true) {
-		if ((i > 0) && (validNotes[i].size == 1)) {
-			nextChord[i] = validNotes[i][0][0];
-			~getNextChords.(currChord, nextChord, validChords, validNotes, (i + 1));
-		};
-	} {
-		if (validNotes[i].size == 1) {
-			nextChord[i] = validNotes[i][0][0];
-			~getNextChords.(currChord, nextChord, validChords, validNotes, (i + 1));
-		};
+	if ((i > 0) && (~enforceCommonTone == true) && (validChord[i].size == 1)) {
+		nextChord[i] = validChord[i][0][0];
+		~getNextChords.();
 	}
+
 
 	validNotes[i].do({ |n|
 
-		if ((i == 0) && (n[1] == "Rt") && (~enforceRootPosition == true)) {
+		case
+		{ (i == 0) && (~enforceRootPosition == true) && (n[1] == "Rt") } {
 			nextChord[i] = n[0];
-			~getNextChords.();
-		} {
-			if (~checkVocalRange.(nextChord, n, i)) {
-				~getNextChord.();
-			}
+			~getNextChord.();
 		}
+		{ (i == 0) && (~enforceFirstInversion == true) && (n[1].contains("3")) } {
+			nextChord[i] = n[0];
+			~getNextChord.();
+		}
+		{ (i == 0) && (~enforceFirstInversion == true) && (n[1].contains("5")) } {
+			nextChord[i] = n[0];
+			~getNextChord.();
+		};
+
+		nextChord[i] = n[0];
+		if (i > 0 && ~checkVocalRange.(nextChord, n[0], i)) {
+			~getNextChord.();
+		} {
+			nextChord[i] = 0;
+		};
+
 	});
 };
 )

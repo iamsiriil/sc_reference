@@ -4,7 +4,6 @@ s.quit;
 /**************************************************************************************
 - HARMONY 01 / Rule Enforcement and Tests
 **************************************************************************************/
-
 // Flags
 (
 ~enforceVoiceCrossProhibition = true;  // Enforced in function ~checkVoiceRange, during backtrack
@@ -19,6 +18,10 @@ s.quit;
 ~enforceRootDuplicate         = true;  // Enforced in function ~checkNoteDuplicate, during backtrack
 ~enforceThirdDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
 ~enforceFifthDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
+
+~enforceRootPosition          = true;  // Enforced in function ~getNextChords, during backtrack
+~enforceFirstInversion        = false; // Enforced in function ~getNextChords, during backtrack
+~enforceSecondInversion       = false; // Enforced in function ~getNextChords, during backtrack
 
 ~enforceCommonTone            = true;  // Enforced in function ~getValidNotes, before backtrack
 )
