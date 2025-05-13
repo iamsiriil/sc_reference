@@ -22,36 +22,49 @@
 ~nextChordRD = [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]]; // Duplicate root
 ~nextChord3D = [48, 63, 67, 75]; // Duplicate third
 ~nextChord5D = [48, 55, 63, 67]; // Duplicate fifth
+
+// Test voice cross
+~nextChordVC =[[48, 60, 55, 67], [48, 55, 64, 72], [48, 55, 60, 64], [48, 55, 64, 72], [48, 55, 60, 64], [41, 53, 60, 69]];
 )
 
 /*************************************************************************************************************************/
 // Check range between voices
 // I can test voice crossing by enforcing a lower bound: 0 no voice crossing; < 0 voice crossing
 (
-~checkRange = { |nextChord, i|
-	var cross, n;
-	var voice = ~voiceData[\voiceNames][i];
+~checkVoiceRange = { |nextChord, note, i|
+	var cross, voice, n;
 
-	n = (nextChord[i] - nextChord[i - 1]);
-	cross = if (~enforceVoiceCrossProhibition = true) {
-		(n >= 0)
+	if (i > 0) {
+		voice = ~voiceData[\voiceNames][i];
+		n = (nextChord[i] - nextChord[i - 1]);
+
+		cross = if (~enforceVoiceCrossProhibition == true) {
+			(n >= 0);
+		} {
+			(n < 0) && (nextChord[i] >= ~voiceData[\voiceRange][voice][0]);
+		};
+
+		switch(i)
+		{ 1 } { cross && (n <= 24) }
+		{ 2 } { cross && (n <= 12) }
+		{ 3 } { cross && (n <= 12) }
 	} {
-		(n < 0) && (nextChord[i] >= ~voiceData[\voiceRange][voice][0])
-	};
-
-	switch(i)
-	{ 1 } { cross && (n <= 24) }
-	{ 2 } { cross && (n <= 12) }
-	{ 3 } { cross && (n <= 12) }
+		true
+	}
 };
-~checkRange.(~nextChord[0], 2);
+~enforceVoiceCrossProhibition = true;
+
+~checkVoiceRange.(~nextChordVC[0], 2);
 )
+
+// Bench test function
+{ 10000.do { ~checkVoiceRange.(~nextChordPOValid[0], 2) } }.bench;
 
 /*************************************************************************************************************************/
 // Check for parallel octaves
 (
 ~checkParallelOctaves = { |currChord, nextChord, numVoices|
-	var index;
+	var index, result;
 	var octaves = [12, 24, 36, 48, 60];
 
 	var i = 0, j;
@@ -67,10 +80,11 @@
 		};
 		i = i + 1;
 	};
-	(
+	result = (
 		(currChord[index[1]] - currChord[index[0]]) ==
 		(nextChord[index[1]] - nextChord[index[0]])
-	)
+	);
+	result.not;
 };
 // Test two chords
 ~checkParallelOctaves.(~currChordPO[2], ~nextChordPO[2], 4);
@@ -111,7 +125,7 @@
 		((currChord[i[1]] - currChord[i[0]]) ==
 		(nextChord[i[1]] - nextChord[i[0]]));
 	};
-	result;
+	result.not;
 };
 // Test two chords
 ~checkParallelFifths.(~currChordPF[1], ~nextChordPF[1], 4);
