@@ -30,18 +30,18 @@
 
 // Data structure containing sets of necessary chords and the chord progression to be played
 ~chordData = Dictionary[
-	\chords -> nil,
-	\progretion -> nil
+	\chords -> nil,           // Dictionary with arrays
+	\progretion -> nil        // 2D Array
 ];
 
 // Data structure containing the state of chords as they're built and played'
 ~chordState = Dictionary[
-	\currChord -> Array.new(),
-	\nextChord -> Array.fill(4, {0}),
-	\validNotes ->  nil
-	\nextValidChords -> OrderedIdentitySet.new(),
-	\lastValidChords -> nil,
-	\nextCipher -> nil
+	\currChord -> nil,        // Array
+	\nextChord -> nil,        // Array
+	\validNotes ->  nil,      // OrderedIdentitySet with arrays ??
+	\nextValidChords -> nil,  // OrderedIdentitySet
+	\lastValidChords -> nil,  // OrderedIdentitySet
+	\nextCipher -> nil        // Symbol
 ];
 )
 
@@ -191,7 +191,7 @@
 
 /*************************************************************************************/
 )
-// list of note names with respective octaves (e.g. C4)
+// list of note names, with respective octave number (e.g. C4)
 (
 ~getNoteNameOct = { |notes|
 	notes.collect { |note| ~midiRange[\octave][note] };
