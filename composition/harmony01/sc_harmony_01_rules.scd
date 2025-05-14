@@ -7,6 +7,7 @@ s.quit;
 // Flags
 (
 ~enforceVoiceCrossProhibition = true;  // Enforced in function ~checkVoiceRange, during backtrack
+~enforceMelodicIntervals      = true;
 ~enforceVocalRange            = true;  // Enforced in function ~getValidNotes, before backtrack
 
 ~enforceParallelOctaves       = true;  // Enforced in function ~chordIsValid, during backtrack
@@ -23,7 +24,7 @@ s.quit;
 ~enforceFirstInversion        = false; // Enforced in function ~getNextChords, during backtrack
 ~enforceSecondInversion       = false; // Enforced in function ~getNextChords, during backtrack
 
-~enforceCommonTone            = true;  // Enforced in function ~getValidNotes, before backtrack
+~enforceCommonTones           = true;  // Enforced in function ~getValidNotes, before backtrack
 )
 
 /*************************************************************************************/
