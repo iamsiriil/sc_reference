@@ -128,14 +128,13 @@ os.boot;
 ~getChordVocalRange = { |cipher|
 	var voices = ~voiceData[\voiceNames];
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
-	var voiceSet, voiceRange, dict;
+	var voiceRange, dict;
 
 	dict = Dictionary.new();
 
 	voices.do { |v|
 		voiceRange = ~voiceData[\voiceRange][v];
-		voiceSet = OrderedIdentitySet.newFrom((voiceRange[0]..voiceRange[1]));
-		dict[v] = chordNotes & voiceSet;
+		dict[v] = chordNotes & (voiceRange[0]..voiceRange[1]);
 	};
 	~chordState[\validNotes] = dict;
 };
@@ -174,7 +173,7 @@ os.boot;
 
 
 
-
+Set.newFrom((1..127)) & (40..60)
 
 
 
