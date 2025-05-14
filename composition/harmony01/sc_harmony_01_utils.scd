@@ -51,7 +51,7 @@
 	//var chordProg = ~chordData[\chordProg];
 	var ciphers, dictChords, dict;
 
-	ciphers = chordProg.collect { |c| c[0]};
+	ciphers = chordProg.collect { |c| c[0] };
 	ciphers.asSet;
 
 	dict = Dictionary.new();
@@ -176,7 +176,7 @@
 	var degreeArray = Array.new(~voiceData[\numVoices]);
 
 	chord.do { |n|
-		degreeArray.add(degree[notes.indexOf(n)]);
+		degreeArray.add(degree[notes.indexOf(n)]); // Use ~getNoteDegree ??
 	};
 	degreeArray;
 };
@@ -185,7 +185,7 @@
 /*************************************************************************************/
 // list of note names (e.g. C)
 (
-~getNoteNames = { |notes|
+~getNoteName = { |notes|
 	notes.collect { |note| ~midiRange[\name][note] };
 };
 
@@ -193,7 +193,7 @@
 )
 // list of note names with respective octaves (e.g. C4)
 (
-~getNoteNamesOct = { |notes|
+~getNoteNameOct = { |notes|
 	notes.collect { |note| ~midiRange[\octave][note] };
 };
 )
