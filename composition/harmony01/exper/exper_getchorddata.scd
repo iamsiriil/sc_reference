@@ -158,7 +158,7 @@ os.boot;
 	};
 
 	voiceNames.do { |v, i|
-		var set = Set.newFrom([currChord[i]]).postln;
+		var set = [currChord[i]];
 		if (set.isSubsetOf(~chordState[\validNotes][v])) {
 			~chordState[\validNotes][v] = (~chordState[\validNotes][v] & set);
 		};
@@ -169,21 +169,8 @@ os.boot;
 ~currChordFM = [41, 53, 60, 69];
 
 ~resolveCommonTones.(~currChordFM);
+~chordState[\validNotes][\spn];
 )
-~currChordFM
-~chordState[\validNotes][\ten]
-
-Set.newFrom([12])
-
-~a = ['bas', 'ten', 'alt', 'spn'].drop(1);
-~a
-
-
-
-
-
-
-
 
 
 
