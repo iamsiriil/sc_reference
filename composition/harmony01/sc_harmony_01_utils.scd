@@ -1,5 +1,4 @@
-s.boot;
-s.quit;
+
 
 /**************************************************************************************
 - HARMONY 01 / Utility Functions and Data Structures
@@ -70,8 +69,8 @@ s.quit;
 
 /*************************************************************************************/
 (
-~getChordDegreePairs = { |chordProg|
-	//var chordProg = ~chordData[\chordProg];
+~getChordDegreePairs = { //|chordProg|
+	var chordProg = ~chordData[\chordProg];
 	var chords, dict;
 
 	chords = chordProg.collect { |c| c[0] };    // Separate ciphers from durations
@@ -183,33 +182,18 @@ s.quit;
 };
 )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*************************************************************************************/
+// list of note names (e.g. C)
 (
-// ~getMIDINoteNames -> Takes a sequence of midi numbers and returns the corresponting
-// list of note names. C
-~getMIDINoteNames = { |notes|
+~getNoteNames = { |notes|
 	notes.collect { |note| ~midiRange[\name][note] };
 };
 
-// ~getMIDINoteNamesOct -> Takes a sequence of midi numbers and returns the corresponding
-// list of note names with respective octaves. C4
-~getMIDINoteNamesOct = { |notes|
+/*************************************************************************************/
+)
+// list of note names with respective octaves (e.g. C4)
+(
+~getNoteNamesOct = { |notes|
 	notes.collect { |note| ~midiRange[\octave][note] };
 };
 )
