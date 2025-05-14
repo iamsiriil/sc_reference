@@ -33,16 +33,17 @@ os.boot;
 	\nextChord -> Array.fill(4, {0}),
 	\validNotes ->  nil,
 	\nextValidChords -> OrderedIdentitySet.fill(50, {[]}),
-	\nextHarm -> nil;
+	\nextCipher -> nil;
 ];
 )
+
 
 /*************************************************************************************/
 // Get chords from chord progression as note - degree pairs
 (
 ~chordProg = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 4]];
 
-~getChordsDegreePairs = { |chordProg|
+~getChordDegreePairs = { |chordProg|
 	var chords, dict;
 
 	chords = chordProg.collect { |c| c[0] };    // Separate ciphers from durations
@@ -63,8 +64,8 @@ os.boot;
 	dict;
 };
 
-~chordData[\chords] = ~getChordsDegreePairs.(~chordProg);
-~chordData[\progression] = ~getChordsDegreePairs;
+~chordData[\chords] = ~getChordDegreePairs.(~chordProg);
+~chordData[\progression] = ~getChordDegreePairs;
 )
 
 /*************************************************************************************/
@@ -72,7 +73,7 @@ os.boot;
 (
 ~chordProg = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 4]];
 
-~getChords = { |chordProg|
+~getChordDegreeArrays = { |chordProg|
 	var ciphers, dictChords, dict;
 
 	ciphers = chordProg.collect { |c| c[0]};
@@ -89,7 +90,7 @@ os.boot;
 	};
 	~chordData[\chords] = dictChords;
 };
-~getChords.(~chordProg);
+~getChordDegreeArrays.(~chordProg);
 ~chordData[\chords][\FM][\notes];
 )
 
@@ -97,8 +98,10 @@ os.boot;
 // Get the corresponding degree of a note, given a cipher
 (
 ~getNoteDegree = { |note, cipher|
+	//var cipher = ~chordState[\nextCipher];
 	var notes = ~chordData[\chords][cipher][\notes];
 	var degree = ~chordData[\chords][cipher][\degree];
+
 	degree[notes.indexOf(note)];
 };
 
@@ -109,9 +112,10 @@ os.boot;
 // Get an array with the corresponding degrees of the notes of a chord
 (
 ~getChordNotesDegree = { |chord, cipher|
+	//var cipher = ~chordState[\nextCipher];
 	var notes = ~chordData[\chords][cipher][\notes];
 	var degree = ~chordData[\chords][cipher][\degree];
-	var degreeArray = Array.new(4);
+	var degreeArray = Array.new(~voiceData[\numVoices]);
 
 	chord.do { |n|
 		degreeArray.add(degree[notes.indexOf(n)]);
@@ -126,6 +130,7 @@ os.boot;
 
 (
 ~getChordVocalRange = { |cipher|
+	//var cipher = ~chordState[\nextCipher];
 	var voices = ~voiceData[\voiceNames];
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
 	var voiceRange, dict;
@@ -143,11 +148,16 @@ os.boot;
 )
 
 /*************************************************************************************/
+(
+~resolveMelodicIntervals = {
 
+};
+)
 /*************************************************************************************/
 
 (
 ~resolveCommonTones = { |currChord|
+	//var currChord = ~chordState[\currChord];
 	var validNotes = ~chordState[\validNotes];
 	var voiceNames = ~voiceData[\voiceNames];
 
@@ -168,50 +178,30 @@ os.boot;
 ~currChordFM = [41, 53, 60, 69];
 
 ~resolveCommonTones.(~currChordFM);
-~chordState[\validNotes][\spn];
+~chordState[\validNotes][\bas];
 )
 
 
-
-Set.newFrom((1..127)) & (40..60)
 
 
 
 /*************************************************************************************/
 // Get valid notes
 (
-~currChord = [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]];
-~chordState[\currChord] = ~currChord[0];
-~chordState[\nextHarm] = ~chordProg[1][0];
+~getValidNotes = {
 
-~getChordVocalRange = { |voices, nextHarm|
-	var chordRanges = Array.fill(4, {[]});
+	~getChordVocalRange.();
 
-	voices.do { |v, i|
-		chordRanges[i] = ~chordData[\chords][nextHarm].select { |n|
-			(n[0] >= ~voiceData[\voiceRange][v][0]) &&
-			(n[0] <= ~voiceData[\voiceRange][v][1])
-		};
+	if (~enforceMelodicIntervals == true) {
+		~resolveMelodicIntervals.();
 	};
-	chordRanges;
+	if (~enforceCommonTone == true) {
+		~resolveCommonTones.();
+	};
 };
-
-~vRange = ~getChordVocalRange.(~voiceData[\voiceNames], ~chordState[\nextHarm]);
 )
 
 /*************************************************************************************/
-
-~chordData[\chords]
-(
-~getDegree = { |note|
-	var chord = ~chordData[\currHarm];
-	var chordArray = ~chordData[\chords][chord].asArray;
-	var degreeArray = ~chordData[]
-};
-)
-
-
-
 
 
 
