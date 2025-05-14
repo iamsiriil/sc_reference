@@ -1,4 +1,4 @@
-s.boot;
+os.boot;
 
 /**************************************************************************************
 - HARMONY 01 / Experiment / Get chord data
@@ -24,25 +24,25 @@ s.boot;
 
 ~chordData = Dictionary[
 	\chords -> nil,
-	\progretion -> nil,
+	\progression -> nil,
 	\nextCipher -> nil
 ];
 
 ~chordState = Dictionary[
 	\currChord -> Array.new(),
 	\nextChord -> Array.fill(4, {0}),
-	\validNotes ->  OrderedIdentitySet.fill(4, {[]}),
+	\validNotes ->  nil,
 	\nextValidChords -> OrderedIdentitySet.fill(50, {[]}),
 	\nextHarm -> nil;
 ];
 )
 
 /*************************************************************************************/
-// Get chords from chord progression passed as argument
+// Get chords from chord progression as note - degree pairs
 (
 ~chordProg = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 4]];
 
-~getChords = { |chordProg|
+~getChordsDegreePairs = { |chordProg|
 	var chords, dict;
 
 	chords = chordProg.collect { |c| c[0] };    // Separate ciphers from durations
@@ -63,9 +63,134 @@ s.boot;
 	dict;
 };
 
-~chordData[\chords] = ~getChords.(~chordProg);
-~chordData[\progretion] = ~chordProg;
+~chordData[\chords] = ~getChordsDegreePairs.(~chordProg);
+~chordData[\progression] = ~getChordsDegreePairs;
 )
+
+/*************************************************************************************/
+// Get chord notes and degrees as separate arrays
+(
+~chordProg = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 4]];
+
+~getChords = { |chordProg|
+	var ciphers, dictChords, dict;
+
+	ciphers = chordProg.collect { |c| c[0]};
+	ciphers.asSet;
+
+	dict = Dictionary.new();
+	dictChords = Dictionary.new();
+
+	ciphers.do { |c|
+		dict[\notes] = ~triads[c][\notes];
+		dict[\degree] = ~triads[c][\degree].wrapExtend(~triads[c][\notes].size);
+
+		dictChords[c] = dict;
+	};
+	~chordData[\chords] = dictChords;
+};
+~getChords.(~chordProg);
+~chordData[\chords][\FM][\notes];
+)
+
+/*************************************************************************************/
+// Get the corresponding degree of a note, given a cipher
+(
+~getNoteDegree = { |note, cipher|
+	var notes = ~chordData[\chords][cipher][\notes];
+	var degree = ~chordData[\chords][cipher][\degree];
+	degree[notes.indexOf(note)];
+};
+
+~getNoteDegree.(31, 'FM');
+)
+
+/*************************************************************************************/
+// Get an array with the corresponding degrees of the notes of a chord
+(
+~getChordNotesDegree = { |chord, cipher|
+	var notes = ~chordData[\chords][cipher][\notes];
+	var degree = ~chordData[\chords][cipher][\degree];
+	var degreeArray = Array.new(4);
+
+	chord.do { |n|
+		degreeArray.add(degree[notes.indexOf(n)]);
+	};
+	degreeArray;
+};
+~chord = [48, 60, 64, 67];
+~getChordNotesDegree.(~chord, 'CM');
+)
+
+/*************************************************************************************/
+
+(
+~getChordVocalRange = { |cipher|
+	var voices = ~voiceData[\voiceNames];
+	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
+	var voiceSet, voiceRange, dict;
+
+	dict = Dictionary.new();
+
+	voices.do { |v|
+		voiceRange = ~voiceData[\voiceRange][v];
+		voiceSet = OrderedIdentitySet.newFrom((voiceRange[0]..voiceRange[1]));
+		dict[v] = chordNotes & voiceSet;
+	};
+	~chordState[\validNotes] = dict;
+};
+~getChordVocalRange.('CM');
+~chordState[\validNotes];
+)
+
+/*************************************************************************************/
+
+/*************************************************************************************/
+
+(
+~resolveCommonTones = { |currChord|
+	var validNotes = ~chordState[\validNotes];
+	var voiceNames = ~voiceData[\voiceNames];
+
+	if (~enforceRootPosition == true) {
+		voiceNames = voiceNames.drop(1);
+		currChord = currChord.drop(1);
+	};
+
+	voiceNames.do { |v, i|
+		var set = Set.newFrom([currChord[i]]).postln;
+		if (set.isSubsetOf(~chordState[\validNotes][v])) {
+			~chordState[\validNotes][v] = (~chordState[\validNotes][v] & set);
+		};
+	};
+};
+
+~enforceRootPosition = true;
+~currChordFM = [41, 53, 60, 69];
+
+~resolveCommonTones.(~currChordFM);
+)
+~currChordFM
+~chordState[\validNotes][\ten]
+
+Set.newFrom([12])
+
+~a = ['bas', 'ten', 'alt', 'spn'].drop(1);
+~a
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*************************************************************************************/
 // Get valid notes
 (
@@ -87,6 +212,43 @@ s.boot;
 
 ~vRange = ~getChordVocalRange.(~voiceData[\voiceNames], ~chordState[\nextHarm]);
 )
+
+/*************************************************************************************/
+
+~chordData[\chords]
+(
+~getDegree = { |note|
+	var chord = ~chordData[\currHarm];
+	var chordArray = ~chordData[\chords][chord].asArray;
+	var degreeArray = ~chordData[]
+};
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*************************************************************************************/
 // Tests
