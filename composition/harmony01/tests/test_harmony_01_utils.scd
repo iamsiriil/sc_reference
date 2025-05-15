@@ -25,6 +25,8 @@
 	var triadKeys = ~triads.keys; // Get all keys from ~triads
 	var getSymbols, dict, result = true;
 
+	"\nFunction: ~getChordDegreePairs".postln;
+
 	"\nTEST #1 : Set of ciphers in progression, is subset of ~triads.keys:".postln;
 	~chordProg.do { |p, i|
 		getSymbols = (p.collect { |a| a[0]});
@@ -78,4 +80,31 @@
 };
 ~test_getChordDegreePairs.();
 )
+
+(
+~test_getChordDegreeArrays = {
+
+};
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

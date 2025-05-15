@@ -24,7 +24,7 @@ os.boot;
 
 ~chordData = Dictionary[
 	\chords -> nil,
-	\progression -> nil,
+	\chordProg -> nil,
 	\nextCipher -> nil
 ];
 
@@ -52,20 +52,17 @@ os.boot;
 	dict = Dictionary.new();
 
 	chords.do { |c|
-		var notes = OrderedIdentitySet.new();
-		var degreeArr = ~triads[c][\degree].wrapExtend(~triads[c][\notes].size);
+		var notes;
 
-		~triads[c][\notes].do { |n, i|
-			var arr = [n, degreeArr[i]];
-			notes.add(arr);
-		};
+		notes = (~triads[c][\notes]) +++ ~triads[c][\degree].bubble(1);
 		dict[c] = notes;
 	};
 	dict;
 };
 
 ~chordData[\chords] = ~getChordDegreePairs.(~chordProg);
-~chordData[\progression] = ~getChordDegreePairs;
+//~chordData[\progression] = ~getChordDegreePairs;
+~chordData[\chords];
 )
 
 /*************************************************************************************/

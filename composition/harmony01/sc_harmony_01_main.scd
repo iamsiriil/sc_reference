@@ -28,19 +28,7 @@ GOALS:
 - Accept chords and durations as input [['c', 2], ['f', 1], ['g', 1], ['c', 4]], with durations in beats
 - getNextChord returns only the first valid chord to reduce computational overhead
 **************************************************************************************/
-
 // -> SynthDef
-
-// -> Chord manager structure
-(
-~chordState = Dictionary({
-	\currChord->Array.new();
-	\nextChord->Array.new();
-	\chordList->Dictionary.new();
-	\validNotes->
-	\validChords->
-});
-)
 
 (
 ~clock = TempoClock.new(120/60);
@@ -48,34 +36,32 @@ GOALS:
 ~t = { |chordProg, firstChord = nil|
 	var nextChord, chordList
 
-	// 1. Get all necessary chords for chordProg
 	~chordData[\chordProg] = chordProg;
 	~getChordDegreeArrays.();
-	// 2. Check whether a first chord was passed as argument
-	//    if not, generate first chord
+
 	if (firstChord != nil) {
 		nextChord = fistChord
 	} {
-		nextChord = ~generateChord.(chordProg[0], chordList);
+		nextChord = ~getFirstChord.(); // ...
 	};
 
-	// 3. Initiate task
 	Task({
-	var tempo = 2.5;
+		var buildChord;
+		var tempo = 2.5;
 
 		chordProg.do({ |c, i|
+			var dur = tempo / ~clock.tempo;
 
-			// 3.1. If i == 0, send next chord to play
+			~chordState[\nextChipher] = c[0];
+
 			if (i == 0) {
 				nextChord;
 			} {
-				// else get valid notes and send to ~getNextChords
+				~getValidNotes.();
+				buildChord = Array.fill(4, {0});
+				~getNextChords.(buildChord, 0);
 
-				// -> Get valid notes
-				// -> Map chord degrees
-				// -> Assert whether there are common tones
-				//        -> If so, flag corresponding voices
-				~getNextChords.(currChord, nextChord, validNotes, 0);
+				nextChord = ~chordState[\nextValidChords].choose;
 			};
 
 			// Play SATB
@@ -85,14 +71,13 @@ GOALS:
 			Synth();
 			tempo.wait;
 
-			currChord = nextChord;
+			~chordState[\currChord] = nextChord;
+			~chordState[\lastValidChords] = ~chordState[\nextValidChords];
 		});
 
 	});
 };
 )
-
-
 
 
 
