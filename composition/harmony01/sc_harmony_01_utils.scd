@@ -153,8 +153,8 @@
 /*************************************************************************************/
 // Get the corresponding degree of a note, given a cipher
 
-~getNoteDegree = { |note, cipher|
-	//var cipher = ~chordState[\nextCipher];
+~getNoteDegree = { |note|
+	var cipher = ~chordState[\nextCipher];
 	var notes = ~chordData[\chords][cipher][\notes];
 	var degree = ~chordData[\chords][cipher][\degree];
 
@@ -165,14 +165,11 @@
 /*************************************************************************************/
 // Get an array with the corresponding degrees of the notes of a chord
 
-~getChordNotesDegree = { |chord, cipher|
-	//var cipher = ~chordState[\nextCipher];
-	var notes = ~chordData[\chords][cipher][\notes];
-	var degree = ~chordData[\chords][cipher][\degree];
-	var degreeArray = Array.new(~voiceData[\numVoices]);
+~getChordNotesDegree = { |chord|
+	var degreeArray = Array.new(4);
 
-	chord.do { |n|
-		degreeArray.add(degree[notes.indexOf(n)]); // Use ~getNoteDegree ??
+	chord.do { |n, i|
+		degreeArray.add(~getNoteDegree.(n));
 	};
 	degreeArray;
 };

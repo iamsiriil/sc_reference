@@ -117,35 +117,40 @@ s.quit;
 // Check root duplication
 (
 ~checkNoteDuplicate = { |nextChord|
-	var chord, chordDegree, numRoot;
+	var degrees, chordAsSet, degreesAsSet;
+	var cipher = ~chordState[\nextCipher];
 
-	chord = ~chordData[\chords][~chordData[\nextHarmony]];
-	chordDegree = chord.select({ |item|
-		(item[0] == nextChord[0]) ||
-		(item[0] == nextChord[1]) ||
-		(item[0] == nextChord[2]) ||
-		(item[0] == nextChord[3])
-	});
+	degrees = ~getChordNotesDegree.(nextChord).postln;
 
-	ocase
-	{ ~enforceRootDuplicate == true } {
-		(chordDegree.count({ |item| item[1] == "Rt" }) == 2)       &&
-		(chordDegree.count({ |item| item[1].contains("3") }) == 1) &&
-		(chordDegree.count({ |item| item[1].contains("5") }) == 1)
-	}
-	{ ~enforceThirdDuplicate == true } {
-		(chordDegree.count({ |item| item[1] == "Rt" }) == 1)       &&
-		(chordDegree.count({ |item| item[1].contains("3") }) == 2) &&
-		(chordDegree.count({ |item| item[1].contains("5") }) == 1)
-	}
-	{ ~enforceFifthDuplicate == true } {
-		(chordDegree.count({ |item| item[1] == "Rt" }) == 1)       &&
-		(chordDegree.count({ |item| item[1].contains("3") }) == 1) &&
-		(chordDegree.count({ |item| item[1].contains("5") }) == 2)
-	}
+	degreesAsSet = ~chordData[\chords][cipher][\degree].asSet;
+	chordAsSet = degrees.asSet;
+
+	if (chordAsSet == degreesAsSet) {
+		case
+		{ ~enforceRootDuplicate == true } {
+			(degrees.count({ |item| item == "Rt" }) == 2);
+		}
+		{ ~enforceThirdDuplicate == true } {
+			(degrees.count({ |item| item.contains("3") }) == 2);
+		}
+		{ ~enforceFifthDuplicate == true } {
+			(degrees.count({ |item| item.contains("5") }) == 2);
+		}
+	} {
+		false;
+	};
 };
-)
+~enforceRootDuplicate = false;
+~enforceThirdDuplicate = false;
+~enforceFifthDuplicate = true;
 
+~nextChord = [48, 55, 67, 72];
+~chordState[\nextCipher] = 'CM';
+~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
+~getChordDegreeArrays.();
+~checkNoteDuplicate.(~nextChord);
+)
+~chordData[\chords][\CM][\degree]
 /*************************************************************************************/
 // Final check8 before chord gets added to validNextChord array
 (
@@ -204,5 +209,6 @@ s.quit;
 	~enforceCommonTone            = true;
 
 	~toggleCount = 0;
+	nil;
 };
 )

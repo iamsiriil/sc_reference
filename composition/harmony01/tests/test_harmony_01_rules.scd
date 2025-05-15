@@ -197,6 +197,7 @@ s.boot;
 	);
 	flagFalse = nil; expFalse = nil; result = true;
 	~resetRules.();
+	nil;
 };
 ~test_checkVoiceRange.();
 )
@@ -238,7 +239,7 @@ s.boot;
 		};
 	);
 	expect = nil; result = true;
-
+	nil;
 };
 ~test_checkParallelOctaves.();
 )
@@ -285,6 +286,7 @@ s.boot;
 
 		~chordState[\currChord] = nil;
 		expect = nil; result = true;
+		nil;
 	);
 };
 ~test_checkParallelFifths.();
