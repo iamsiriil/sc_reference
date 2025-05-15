@@ -68,14 +68,11 @@ var backtrack = { |numVoices, nextChord, validNextChord, validNotes, i|
 )
 
 
+(
+~notes = ["C", "D", "E", "F", "G", "A", "B"];
 
-
-
-
-
-
-
-
+[4, 6, 8].collect { |n| ~notes.wrapAt(n) }
+)
 
 
 
