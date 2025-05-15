@@ -4,7 +4,7 @@ s.quit;
 /**************************************************************************************
 - HARMONY 01 / Rule Enforcement and Tests
 **************************************************************************************/
-// Flags
+// Enforcement flags
 (
 ~enforceVoiceCrossProhibition = true;  // Enforced in function ~checkVoiceRange, during backtrack
 ~enforceMelodicIntervals      = true;
@@ -25,6 +25,9 @@ s.quit;
 ~enforceSecondInversion       = false; // Enforced in function ~getNextChords, during backtrack
 
 ~enforceCommonTones           = true;  // Enforced in function ~getValidNotes, before backtrack
+
+// Toggle rules counter
+~toggleCount = 0;
 )
 
 /*************************************************************************************/
@@ -126,66 +129,72 @@ s.quit;
 	chordAsSet = degrees.asSet;
 
 	if (chordAsSet == degreesAsSet) {
-		case
-		{ ~enforceRootDuplicate == true } {
-			(degrees.count({ |item| item == "Rt" }) == 2);
-		}
-		{ ~enforceThirdDuplicate == true } {
-			(degrees.count({ |item| item.contains("3") }) == 2);
-		}
-		{ ~enforceFifthDuplicate == true } {
-			(degrees.count({ |item| item.contains("5") }) == 2);
-		}
+
+		if (~enforceNoteDuplicate == true) {
+
+			case
+			{ ~enforceRootDuplicate == true } {
+				(degrees.count({ |item| item == "Rt" }) == 2);
+			}
+			{ ~enforceThirdDuplicate == true } {
+				(degrees.count({ |item| item.contains("3") }) == 2);
+			}
+			{ ~enforceFifthDuplicate == true } {
+				(degrees.count({ |item| item.contains("5") }) == 2);
+			}
+		} {
+			true;
+		};
 	} {
 		false;
 	};
 };
-~enforceRootDuplicate = false;
+~enforceRootDuplicate = true;
 ~enforceThirdDuplicate = false;
-~enforceFifthDuplicate = true;
+~enforceFifthDuplicate = false;
 
-~nextChord = [48, 55, 67, 72];
+~nextChord = [48, 55, 64, 72];
 ~chordState[\nextCipher] = 'CM';
 ~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
 ~getChordDegreeArrays.();
 ~checkNoteDuplicate.(~nextChord);
 )
-~chordData[\chords][\CM][\degree]
+
 /*************************************************************************************/
 // Final check8 before chord gets added to validNextChord array
 (
-~chordIsValid = { |currChord, nextChord, numVoices|
-	(
-		(
-			if (~enforceNoteDuplicate == true) {
-				~checkNoteDuplicate.(nextChord)
-			} { true }
-		) &&
-		(
-			if (~enforceParallelOctaves == true) {
-				~checkParallelOctaves.(currChord, nextChord, numVoices)
-			} { true }
-		) &&
-		(
-			if (~enforceParallelFifths == true) {
-				~checkParallelFifths.(currChord, nextChord, numVoices)
-			} { true }
-		)
-	)
+~chordIsValid = { |nextChord|
+	var result = true;
+
+	if (~enforceNoteDuplicate == true) {
+		result = result && ~checkNoteDuplicate.(nextChord);
+	};
+	if (~enforceParallelOctaves == true) {
+		result = result && ~checkParallelOctaves.(nextChord);
+	};
+	if (~enforceParallelFifths == true) {
+		result = result && ~checkParallelFifths.(nextChord);
+	};
+	result;
 };
 )
 
 /*************************************************************************************/
 // Toggle rules
 (
-~toggleCount = 0;
-
 ~toggleRules = { |count|
 	switch (count)
-	{ 0 } {}
-	{ 1 } {}
+	{ 0 } {
+		~enforceRootPosition = false;
+		~enforceFirstInversion = true;
+	}
+	{ 1 } {
+		~enforceRootDuplicate = false;
+		~enforceThirdDuplicate = true;
+	}
 	{ 2 } {}
 	{ 3 }
+	~toggleCount = ~toggleCount + 1;
 };
 )
 
