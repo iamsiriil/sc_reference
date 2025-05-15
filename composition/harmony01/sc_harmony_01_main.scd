@@ -49,8 +49,8 @@ GOALS:
 	var nextChord, chordList
 
 	// 1. Get all necessary chords for chordProg
-	chordList = ~getChords.(chordProg);
-
+	~chordData[\chordProg] = chordProg;
+	~getChordDegreeArrays.();
 	// 2. Check whether a first chord was passed as argument
 	//    if not, generate first chord
 	if (firstChord != nil) {

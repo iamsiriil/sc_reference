@@ -31,7 +31,7 @@
 // Data structure containing sets of necessary chords and the chord progression to be played
 ~chordData = Dictionary[
 	\chords -> nil,           // Dictionary with arrays
-	\progretion -> nil        // 2D Array
+	\chordProg -> nil         // 2D Array
 ];
 
 // Data structure containing the state of chords as they're built and played'
@@ -43,12 +43,12 @@
 	\lastValidChords -> nil,  // OrderedIdentitySet
 	\nextCipher -> nil        // Symbol
 ];
-)
+
 
 /*************************************************************************************/
-(
-~getChordDegreeArrays = { |chordProg|
-	//var chordProg = ~chordData[\chordProg];
+
+~getChordDegreeArrays = {
+	var chordProg = ~chordData[\chordProg];
 	var ciphers, dictChords, dict;
 
 	ciphers = chordProg.collect { |c| c[0] };
@@ -65,10 +65,10 @@
 	};
 	~chordData[\chords] = dictChords;
 };
-)
+
 
 /*************************************************************************************/
-(
+
 ~getChordDegreePairs = { //|chordProg|
 	var chordProg = ~chordData[\chordProg];
 	var chords, dict;
@@ -79,21 +79,17 @@
 	dict = Dictionary.new();
 
 	chords.do { |c|
-		var notes = OrderedIdentitySet.new();
-		var degreeArr = ~triads[c][\degree].wrapExtend(~triads[c][\notes].size);
+		var notes;
 
-		~triads[c][\notes].do { |n, i|
-			var arr = [n, degreeArr[i]];
-			notes.add(arr);
-		};
+		notes = ~triads[c][\notes] +++ ~triads[c][\degree].bubble(1);
 		dict[c] = notes;
 	};
 	dict;
 };
-)
+
 
 /*************************************************************************************/
-(
+
 ~getChordVocalRange = { |cipher|
 	//var cipher = ~chordState[\nextCipher];
 	var voices = ~voiceData[\voiceNames];
@@ -108,17 +104,17 @@
 	};
 	~chordState[\validNotes] = dict;
 };
-)
+
 
 /*************************************************************************************/
-(
+
 ~resolveMelodicIntervals = {
 
 };
-)
+
 
 /*************************************************************************************/
-(
+
 ~resolveCommonTones = { |currChord|
 	//var currChord = ~chordState[\currChord];
 	var validNotes = ~chordState[\validNotes];
@@ -136,11 +132,11 @@
 		};
 	};
 };
-)
+
 
 /*************************************************************************************/
 // Get valid notes
-(
+
 ~getValidNotes = {
 
 	~getChordVocalRange.();
@@ -152,11 +148,11 @@
 		~resolveCommonTones.();
 	};
 };
-)
+
 
 /*************************************************************************************/
 // Get the corresponding degree of a note, given a cipher
-(
+
 ~getNoteDegree = { |note, cipher|
 	//var cipher = ~chordState[\nextCipher];
 	var notes = ~chordData[\chords][cipher][\notes];
@@ -164,11 +160,11 @@
 
 	degree[notes.indexOf(note)];
 };
-)
+
 
 /*************************************************************************************/
 // Get an array with the corresponding degrees of the notes of a chord
-(
+
 ~getChordNotesDegree = { |chord, cipher|
 	//var cipher = ~chordState[\nextCipher];
 	var notes = ~chordData[\chords][cipher][\notes];
@@ -180,19 +176,19 @@
 	};
 	degreeArray;
 };
-)
+
 
 /*************************************************************************************/
 // list of note names (e.g. C)
-(
+
 ~getNoteName = { |notes|
 	notes.collect { |note| ~midiRange[\name][note] };
 };
 
 /*************************************************************************************/
-)
+
 // list of note names, with respective octave number (e.g. C4)
-(
+
 ~getNoteNameOct = { |notes|
 	notes.collect { |note| ~midiRange[\octave][note] };
 };
