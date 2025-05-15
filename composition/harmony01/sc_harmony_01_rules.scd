@@ -30,17 +30,16 @@ s.quit;
 /*************************************************************************************/
 // Check range between voices
 (
-~checkVoiceRange = { |nextChord, note, i|
-	var cross, voice, n;
+~checkVoiceSpacing = { |nextChord, i|
+	var cross, n;
 
 	if (i > 0) {
-		voice = ~voiceData[\voiceNames][i];
 		n = (nextChord[i] - nextChord[i - 1]);
 
 		cross = if (~enforceVoiceCrossProhibition == true) {
 			(n >= 0);
 		} {
-			(n < 0) && (nextChord[i] >= ~voiceData[\voiceRange][voice][0]);
+			(n >= -4);
 		};
 
 		switch(i)
@@ -48,17 +47,19 @@ s.quit;
 		{ 2 } { cross && (n <= 12) }
 		{ 3 } { cross && (n <= 12) }
 	} {
-		true
-	}
+		true;
+	};
 };
 )
 
 /*************************************************************************************/
 // Check for parallel octaves
 (
-~checkParallelOctaves = { |currChord, nextChord, numVoices|
+~checkParallelOctaves = { |nextChord|
+	var currChord = ~chordState[\currChord];
+	var numVoices = ~voiceData[\numVoices];
 	var index, result;
-	var octaves = [12, 24, 36, 48, 60];
+	var octaves = [12, 24, 36];
 
 	var i = 0, j;
 	while {i < (numVoices - 1)} {
@@ -84,9 +85,11 @@ s.quit;
 /*************************************************************************************/
 // Check for parallel fifths
 (
-~checkParallelFifths = { |currChord, nextChord, numVoices|
+~checkParallelFifths = { |nextChord|
+	var currChord = ~chordState[\currChord];
+	var numVoices = ~voiceData[\numVoices];
 	var index = Array.new(4), result = false;
-	var fifths = [7, 19, 31, 43, 55];
+	var fifths = [7, 19, 31, 43];
 
 	var i = 0, j;
 	while {i < (numVoices - 1)} {
@@ -185,13 +188,21 @@ s.quit;
 // Reset rules
 (
 ~resetRules = {
+
 	~enforceVoiceCrossProhibition = true;
+	~enforceMelodicIntervals      = true;
+	~enforceVocalRange            = true;
 	~enforceParallelOctaves       = true;
 	~enforceParallelFifths        = true;
 	~enforceNoteDuplicate         = true;
 	~enforceRootDuplicate         = true;
 	~enforceThirdDuplicate        = false;
 	~enforceFifthDuplicate        = false;
+	~enforceRootPosition          = true;
+	~enforceFirstInversion        = false;
+	~enforceSecondInversion       = false;
 	~enforceCommonTone            = true;
+
+	~toggleCount = 0;
 };
 )
