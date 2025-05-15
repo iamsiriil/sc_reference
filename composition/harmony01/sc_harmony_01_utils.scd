@@ -44,7 +44,6 @@
 	\nextCipher -> nil        // Symbol
 ];
 
-
 /*************************************************************************************/
 
 ~getChordDegreeArrays = {
@@ -90,8 +89,8 @@
 
 /*************************************************************************************/
 
-~getChordVocalRange = { |cipher|
-	//var cipher = ~chordState[\nextCipher];
+~getChordVocalRange = { //|cipher|
+	var cipher = ~chordState[\nextCipher];
 	var voices = ~voiceData[\voiceNames];
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
 	var voiceRange, dict;
@@ -115,8 +114,8 @@
 
 /*************************************************************************************/
 
-~resolveCommonTones = { |currChord|
-	//var currChord = ~chordState[\currChord];
+~resolveCommonTones = { //|currChord|
+	var currChord = ~chordState[\currChord];
 	var validNotes = ~chordState[\validNotes];
 	var voiceNames = ~voiceData[\voiceNames];
 
