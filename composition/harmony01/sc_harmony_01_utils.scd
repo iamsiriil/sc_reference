@@ -28,18 +28,18 @@
 
 // Data structure containing sets of necessary chords and the chord progression to be played
 ~chordData = Dictionary[
-	\chords -> nil,           // Dictionary with arrays
+	\chords    -> nil,        // Dictionary with arrays
 	\chordProg -> nil         // 2D Array
 ];
 
 // Data structure containing the state of chords as they're built and played'
 ~chordState = Dictionary[
-	\currChord -> nil,        // Array
-	\nextChord -> nil,        // Array
-	\validNotes ->  nil,      // OrderedIdentitySet with arrays ??
+	\currChord       -> nil,  // Array
+	\nextChord       -> nil,  // Array
+	\validNotes      -> nil,  // OrderedIdentitySet with arrays ??
 	\nextValidChords -> nil,  // OrderedIdentitySet
 	\lastValidChords -> nil,  // OrderedIdentitySet
-	\nextCipher -> nil        // Symbol
+	\nextCipher      -> nil   // Symbol
 ];
 
 /*************************************************************************************/
@@ -181,5 +181,31 @@
 
 ~getNoteNameOct = { |notes|
 	notes.collect { |note| ~midiRange[\octave][note] };
+};
+
+/*************************************************************************************/
+// Resets ~chordData dictionary values to nil
+~resetChordData = {
+
+	~chordData = Dictionary[
+		\chords    -> nil,
+		\chordProg -> nil
+	];
+	nil;
+};
+
+/*************************************************************************************/
+// Resets ~chordState dictionary values to nil
+~resetChordState = {
+
+	~chordState = Dictionary[
+		\currChord       -> nil,
+		\nextChord       -> nil,
+		\validNotes      -> nil,
+		\nextValidChords -> nil,
+		\lastValidChords -> nil,
+		\nextCipher      -> nil
+	];
+	nil;
 };
 )

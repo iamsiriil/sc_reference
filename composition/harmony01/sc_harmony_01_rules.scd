@@ -3,28 +3,48 @@
 **************************************************************************************/
 // Enforcement flags
 (
-~enforceVoiceCrossProhibition = true;  // Enforced in function ~checkVoiceRange, during backtrack
-~enforceMelodicIntervals      = true;
-~enforceVocalRange            = true;  // Enforced in function ~getValidNotes, before backtrack
+~enforceVoiceCrossProhibition = true;  // Enforced in ~checkVoiceRange, during backtrack
+~enforceMelodicIntervals      = true;  // Enforced in ~getValidNotes, before backtrack
+~enforceVocalRange            = true;  // Enforced in ~getValidNotes, before backtrack
+~enforceCommonTones           = true;  // Enforced in ~getValidNotes, before backtrack
 
-~enforceParallelOctaves       = true;  // Enforced in function ~chordIsValid, during backtrack
-~enforceParallelFifths        = true;  // Enforced in function ~chordIsValid, during backtrack
+~enforceParallelOctaves       = true;  // Enforced in ~chordIsValid, during backtrack
+~enforceParallelFifths        = true;  // Enforced in ~chordIsValid, during backtrack
 
-~enforceNoteDuplicate         = true;  // Enforced in function ~chordIsValid, during backtrack
+~enforceNoteDuplicate         = true;  // Enforced in ~chordIsValid, during backtrack
 // Note duplication enforcement flags: 1 true to 2 false
-~enforceRootDuplicate         = true;  // Enforced in function ~checkNoteDuplicate, during backtrack
-~enforceThirdDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
-~enforceFifthDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
+~enforceRootDuplicate         = true;  // Enforced in ~checkNoteDuplicate, during backtrack
+~enforceThirdDuplicate        = false; // Enforced in ~checkNoteDuplicate, during backtrack
+~enforceFifthDuplicate        = false; // Enforced in ~checkNoteDuplicate, during backtrack
 
-~enforceChordPosition         = true;  // Enforced in function ~chordIsValid, during backtrack
-~enforceRootPosition          = true;  // Enforced in function ~getNextChords, during backtrack
-~enforceFirstInversion        = false; // Enforced in function ~getNextChords, during backtrack
-~enforceSecondInversion       = false; // Enforced in function ~getNextChords, during backtrack
-
-~enforceCommonTones           = true;  // Enforced in function ~getValidNotes, before backtrack
+~enforceChordPosition         = true;  // Enforced in ~chordIsValid, during backtrack
+// Chord position enforcement flags: 1 true to 2 false
+~enforceRootPosition          = true;  // Enforced in ~checkChordPosition, during backtrack
+~enforceFirstInversion        = false; // Enforced in ~checkChordPosition, during backtrack
+~enforceSecondInversion       = false; // Enforced in ~checkChordPosition, during backtrack
 
 // Toggle rules counter
 ~toggleCount = 0;
+
+/*************************************************************************************/
+// Check chord position: Root, first inversion, second inversion
+
+~checkChordPosition = { |nextChord|
+	var bassNote = ~getNoteDegree.(nextChord[0]);
+	var result;
+
+	case
+	{ ~enforceRootPosition == true } {
+		result = (bassNote == "Rt");
+	}
+	{ ~enforceFirstInversion == true } {
+		result = bassNote.contains("3");
+	}
+	{ ~enforceSecondInversion == true } {
+		result = bassNote.contains("5");
+	};
+	result;
+};
 
 /*************************************************************************************/
 // Check range between voices
@@ -149,6 +169,9 @@
 ~chordIsValid = { |nextChord|
 	var result = true;
 
+	if (~enforceChordPosition == true) {
+		result = result && ~checkChordPosition.(nextChord);
+	}
 	if (~enforceNoteDuplicate == true) {
 		result = result && ~checkNoteDuplicate.(nextChord);
 	};
@@ -158,9 +181,6 @@
 	if (~enforceParallelFifths == true) {
 		result = result && ~checkParallelFifths.(nextChord);
 	};
-	if (~enforceChordPosition == true) {                       // Flag not added
-		result = result && ~checkChordPosition.(nextChord);    // Function not done
-	}
 	result;
 };
 
