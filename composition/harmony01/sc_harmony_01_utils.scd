@@ -67,7 +67,7 @@
 /*************************************************************************************/
 // Get chord notes, within MIDI range, and respective degrees, as paired arrays
 
-~getChordDegreePairs = { //|chordProg|
+~getChordDegreePairs = {
 	var chordProg = ~chordData[\chordProg];
 	var chords, dict;
 
@@ -88,7 +88,7 @@
 /*************************************************************************************/
 // Get all chord notes for each vocal range
 
-~getChordVocalRange = { //|cipher|
+~getChordVocalRange = {
 	var cipher = ~chordState[\nextCipher];
 	var voices = ~voiceData[\voiceNames];
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
@@ -113,7 +113,7 @@
 /*************************************************************************************/
 // Remove valid notes other than common tones from respective voices
 
-~resolveCommonTones = { //|currChord|
+~resolveCommonTones = {
 	var currChord = ~chordState[\currChord];
 	var validNotes = ~chordState[\validNotes];
 	var voiceNames = ~voiceData[\voiceNames];
@@ -172,15 +172,15 @@
 /*************************************************************************************/
 // list of note names (e.g. C)
 
-~getNoteName = { |notes|
-	notes.collect { |note| ~midiRange[\name][note] };
+~getNoteName = { |note|
+	note.collect { |n| ~midiRange[\name][n] };
 };
 
 /*************************************************************************************/
 // list of note names, with respective octave number (e.g. C4)
 
-~getNoteNameOct = { |notes|
-	notes.collect { |note| ~midiRange[\octave][note] };
+~getNoteNameOct = { |note|
+	note.collect { |n| ~midiRange[\octave][n] };
 };
 
 /*************************************************************************************/
