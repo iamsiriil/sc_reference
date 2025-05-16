@@ -325,68 +325,6 @@
 /*************************************************************************************/
 // Test Note Duplicates
 (
-~test_checkNoteDuplicate = {
-	var result = true;
-
-	~chordState[\nextCipher] = 'CM';
-	~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
-	~getChordDegreeArrays.();
-
-	"before loop".postln;
-	~test_noteDuplicates[\chordSetRD].do { |dict|
-		dict[\message].postln;
-		//dict.postln;
-
-		dict[\flags].do { |f|
-			var flagRD, flagTD, flagFD, flagND;
-			//f.class.postln;
-
-			#flagRD, flagTD, flagFD = f[0];
-			flagND = f[1];
-			//f[2].post;
-
-			~enforceNoteDuplicate  = flagND;
-			~enforceRootDuplicate  = flagRD;
-			~enforceThirdDuplicate = flagTD;
-			~enforceFifthDuplicate = flagFD;
-
-			dict[\chord].do { |c|
-				~checkNoteDuplicate.(c);
-			}
-		}
-	}
-};
-~test_checkNoteDuplicate.();
-)
-
-#a, b, c = [1, 2, 3, 4]
-
-~test_noteDuplicates[\chordSetRD][\flags].keys
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(
 ~test_CNDSubroutine = { |dict|
 	var result = true;
 	var chords = dict[\chords];
@@ -434,7 +372,6 @@
 
 ~test_checkNoteDuplicate.();
 )
-Orde
 
 ~test_CNDData[\chordSetRD][\chords][0]
 ~test_CNDData[\chordSetRD][\flags]
