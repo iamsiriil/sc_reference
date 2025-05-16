@@ -144,7 +144,7 @@
 };
 
 /*************************************************************************************/
-// Final check8 before chord gets added to validNextChord array
+// Final check before chord gets added to validNextChord array
 
 ~chordIsValid = { |nextChord|
 	var result = true;
@@ -158,6 +158,9 @@
 	if (~enforceParallelFifths == true) {
 		result = result && ~checkParallelFifths.(nextChord);
 	};
+	if (~enforceChordPosition == true) {                       // Flag not added
+		result = result && ~checkChordPosition.(nextChord);    // Function not done
+	}
 	result;
 };
 
