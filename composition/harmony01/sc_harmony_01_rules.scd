@@ -1,6 +1,3 @@
-s.boot;
-s.quit;
-
 /**************************************************************************************
 - HARMONY 01 / Rule Enforcement and Tests
 **************************************************************************************/
@@ -28,11 +25,11 @@ s.quit;
 
 // Toggle rules counter
 ~toggleCount = 0;
-)
+
 
 /*************************************************************************************/
 // Check range between voices
-(
+
 ~checkVoiceSpacing = { |nextChord, i|
 	var cross, n;
 
@@ -53,11 +50,11 @@ s.quit;
 		true;
 	};
 };
-)
+
 
 /*************************************************************************************/
 // Check for parallel octaves
-(
+
 ~checkParallelOctaves = { |nextChord|
 	var currChord = ~chordState[\currChord];
 	var numVoices = ~voiceData[\numVoices];
@@ -83,11 +80,11 @@ s.quit;
 	);
 	result.not;
 };
-)
+
 
 /*************************************************************************************/
 // Check for parallel fifths
-(
+
 ~checkParallelFifths = { |nextChord|
 	var currChord = ~chordState[\currChord];
 	var numVoices = ~voiceData[\numVoices];
@@ -114,16 +111,16 @@ s.quit;
 	};
 	result.not;
 };
-)
+
 
 /*************************************************************************************/
 // Check root duplication
-(
+
 ~checkNoteDuplicate = { |nextChord|
 	var degrees, chordAsSet, degreesAsSet;
 	var cipher = ~chordState[\nextCipher];
 
-	degrees = ~getChordNotesDegree.(nextChord).postln;
+	degrees = ~getChordNotesDegree.(nextChord);
 
 	degreesAsSet = ~chordData[\chords][cipher][\degree].asSet;
 	chordAsSet = degrees.asSet;
@@ -149,7 +146,7 @@ s.quit;
 		false;
 	};
 };
-~enforceRootDuplicate = true;
+/*~enforceRootDuplicate = true;
 ~enforceThirdDuplicate = false;
 ~enforceFifthDuplicate = false;
 
@@ -157,12 +154,12 @@ s.quit;
 ~chordState[\nextCipher] = 'CM';
 ~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
 ~getChordDegreeArrays.();
-~checkNoteDuplicate.(~nextChord);
-)
+~checkNoteDuplicate.(~nextChord);*/
+
 
 /*************************************************************************************/
 // Final check8 before chord gets added to validNextChord array
-(
+
 ~chordIsValid = { |nextChord|
 	var result = true;
 
@@ -177,11 +174,11 @@ s.quit;
 	};
 	result;
 };
-)
+
 
 /*************************************************************************************/
 // Toggle rules
-(
+
 ~toggleRules = { |count|
 	switch (count)
 	{ 0 } {
@@ -193,14 +190,14 @@ s.quit;
 		~enforceThirdDuplicate = true;
 	}
 	{ 2 } {}
-	{ 3 }
+	{ 3 };
 	~toggleCount = ~toggleCount + 1;
 };
-)
+
 
 /*************************************************************************************/
 // Reset rules
-(
+
 ~resetRules = {
 
 	~enforceVoiceCrossProhibition = true;

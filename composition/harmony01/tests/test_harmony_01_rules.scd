@@ -1,6 +1,8 @@
-s.boot;
-
-"../sc_harmony_01_rules".loadRelative;
+(
+"../sc_harmony_01_rules.scd".loadRelative;
+"../sc_harmony_01_utils.scd".loadRelative;
+"../sc_harmony_01_lib.scd".loadRelative;
+)
 
 /**************************************************************************************
 - HARMONY 01 / Test rules
@@ -32,6 +34,11 @@ s.boot;
 ~nextChordRD = [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]]; // Duplicate root
 ~nextChord3D = [48, 63, 67, 75]; // Duplicate third
 ~nextChord5D = [48, 55, 63, 67]; // Duplicate fifth
+
+~test_noteDuplicate = Dictionary[
+	\test00 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [true, true]],
+	\test01 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [false, false]]
+];
 
 // Test voice spacing
 ~test_voiceRange = Dictionary[
@@ -279,9 +286,9 @@ s.boot;
 			result = result && ~checkParallelFifths.(~test_parallelFifths[\scdChordVAL][0][i]);
 		};
 		if (result == expect) {
-			"TEST #0 | expected: % got: % | PASSED".format(expect, result).postln;
+			"TEST #1 | expected: % got: % | PASSED".format(expect, result).postln;
 		} {
-			"TEST #0 | expected: % got: % | FAILED".format(expect, result).postln;
+			"TEST #1 | expected: % got: % | FAILED".format(expect, result).postln;
 		};
 
 		~chordState[\currChord] = nil;
@@ -290,6 +297,39 @@ s.boot;
 	);
 };
 ~test_checkParallelFifths.();
+)
+
+/*************************************************************************************/
+// Test Note Duplicates
+(
+~test_checkNoteDuplicate = {
+	var flagTrue, flagFalse;
+	var expTrue, expFalse;
+	var result = true;
+
+	~chordState[\nextCipher] = 'CM';
+	~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
+	~getChordDegreeArrays.();
+
+	(
+		flagTrue = ~test_noteDuplicate[\test00][1][0];
+		expTrue = ~test_noteDuplicate[\test00][1][1];
+
+		~enforceRootDuplicate = flagTrue;
+
+		~test_noteDuplicate[\test00][0].do { |c|
+			result = result && ~checkNoteDuplicate.(c);
+		};
+		if (result == expTrue) {
+			"TEST #0 | expected: % got: % | PASSED".format(expTrue, result).postln;
+		} {
+			"TEST #0 | expected: % got: % | FAILED".format(expTrue, result).postln;
+		};
+	);
+	flagTrue = nil; expTrue = nil; result = true;
+	~resetRules.();
+};
+~test_checkNoteDuplicate.();
 )
 
 
