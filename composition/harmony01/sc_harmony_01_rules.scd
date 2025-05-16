@@ -171,7 +171,7 @@
 
 	if (~enforceChordPosition == true) {
 		result = result && ~checkChordPosition.(nextChord);
-	}
+	};
 	if (~enforceNoteDuplicate == true) {
 		result = result && ~checkNoteDuplicate.(nextChord);
 	};

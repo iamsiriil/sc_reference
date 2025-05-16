@@ -27,13 +27,16 @@
 	\test00 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [true, true]],
 	\test01 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [false, false]]
 ];
-~test_ND = Dictionary[
+~test_noteDuplicates = Dictionary[
 	\chordSetRD -> Dictionary[
+		//\message-> "Chord Set #1: Root repetition",
 		\chords -> [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]],
-		\flagRD -> [[true, false, false], true], // [[RD Flag, TD Flag, FD Flag], ND Flag]
-		\flagTD -> [[false, true, false], true],
-		\flagFD -> [[false, false, true], true],
-		\flagND -> [[true, true, true], false],
+		\flags  -> Dictionary[
+			\flagRD -> [[true, false, false], true, "Test #1: Flags: RD true; TD false; FD false; ND true"], // [[RD Flag, TD Flag, FD Flag], ND Flag]
+			\flagTD -> [[false, true, false], true, "Test #2: Flags: RD false; TD true; FD false; ND true"],
+			\flagFD -> [[false, false, true], true, "Test #3: Flags: RD false; TD false; FD true; ND true"],
+			\flagND -> [[true, true, true], false, "Test #4: Flags: RD true; TD true; FD true; ND false"]
+		],
 		\expect -> [true, false, false, true]    // Expected return for flags: [RD, TD, FD, ND]
 	]
 ];
@@ -301,56 +304,42 @@
 // Test Note Duplicates
 (
 ~test_checkNoteDuplicate = {
-	var flagTrue, flagFalse;
-	var expTrue, expFalse;
 	var result = true;
 
 	~chordState[\nextCipher] = 'CM';
 	~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
 	~getChordDegreeArrays.();
 
-	(
-		flagTrue = ~test_noteDuplicate[\test00][1][0];
-		expTrue = ~test_noteDuplicate[\test00][1][1];
+	"before loop".postln;
+	~test_noteDuplicates[\chordSetRD].do { |dict|
+		//(dict[\message]).postln;
+		dict.postln;
 
-		~enforceRootDuplicate = flagTrue;
+		dict[\flags].do { |f|
+			var flagRD, flagTD, flagFD, flagND;
+			//f.class.postln;
 
-		~test_noteDuplicate[\test00][0].do { |c|
-			result = result && ~checkNoteDuplicate.(c);
-		};
-		if (result == expTrue) {
-			"TEST #0 | expected: % got: % | PASSED".format(expTrue, result).postln;
-		} {
-			"TEST #0 | expected: % got: % | FAILED".format(expTrue, result).postln;
-		};
-	);
-	flagTrue = nil; expTrue = nil; result = true;
-	~resetRules.();
+			#flagRD, flagTD, flagFD = f[0];
+			flagND = f[1];
+			//f[2].post;
 
-	(
-		flagFalse = ~test_noteDuplicate[\test01][1][0];
-		expFalse = ~test_noteDuplicate[\test01][1][1];
+			~enforceNoteDuplicate  = flagND;
+			~enforceRootDuplicate  = flagRD;
+			~enforceThirdDuplicate = flagTD;
+			~enforceFifthDuplicate = flagFD;
 
-		~enforceRootDuplicate = flagFalse;
-		~enforceThirdDuplicate = true;
-		"Before loop".postln;
-		~test_noteDuplicate[\test01][0].do { |c|
-			result = result && ~checkNoteDuplicate.(c);
-		};
-		if (result == expFalse) {
-			"TEST #0 | expected: % got: % | PASSED".format(expFalse, result).postln;
-		} {
-			"TEST #0 | expected: % got: % | FAILED".format(expFalse, result).postln;
-		};
-	);
-	flagFalse = nil; expFalse = nil; result = true;
-	~resetRules.();
+			dict[\chord].do { |c|
+				~checkNoteDuplicate.(c);
+			}
+		}
+	}
 };
 ~test_checkNoteDuplicate.();
 )
 
+#a, b, c = [1, 2, 3, 4]
 
-
+~test_noteDuplicates[\chordSetRD][\flags].keys
 
 
 
