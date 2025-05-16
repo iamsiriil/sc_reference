@@ -22,22 +22,20 @@
 	\scdChordPLF -> [[[50, 57, 62, 65], [48, 55, 67, 76], [46, 62, 70, 77], [48, 57, 64, 69], [43, 55, 59, 74], [53, 57, 65, 72]], false], // Has parallel fifths
 	\scdChordVAL -> [[[50, 53, 62, 69], [48, 55, 60, 64], [46, 58, 65, 74], [48, 57, 60, 64], [43, 59, 62, 71], [41, 57, 60, 65]], true]   // Progression is valid
 ];
-/*~chordData = Dictionary[
-	\chords -> Dictionary[
-		\CM -> OrderedIdentitySet[[0, "Rt"], [4, "M3"], [7, "P5"], [12, "Rt"], [16, "M3"], [19, "P5"], [24, "Rt"], [28, "M3"], [31, "P5"], [36, "Rt"], [40, "M3"], [43, "P5"], [48, "Rt"], [52, "M3"], [55, "P5"], [60, "Rt"], [64, "M3"], [67, "P5"], [72, "Rt"], [76, "M3"], [79, "P5"], [84, "Rt"], [88, "M3"], [91, "P5"], [96, "Rt"], [100, "M3"], [103, "P5"], [108, "Rt"], [112, "M3"], [115, "P5"], [120, "Rt"], [124, "M3"], [127, "P5"]]
-	],
-	\progretion -> ['CM'],
-	\nextHarmony -> 'CM'
-];*/
-
-// Test note duplication
-~nextChordRD = [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]]; // Duplicate root
-~nextChord3D = [48, 63, 67, 75]; // Duplicate third
-~nextChord5D = [48, 55, 63, 67]; // Duplicate fifth
 
 ~test_noteDuplicate = Dictionary[
 	\test00 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [true, true]],
 	\test01 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [false, false]]
+];
+~test_ND = Dictionary[
+	\chordSetRD -> Dictionary[
+		\chords -> [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]],
+		\flagRD -> [[true, false, false], true],
+		\flagTD -> [[false, true, false], true],
+		\flagFD -> [[false, false, true], true],
+		\flagND -> [[true, true, true], false],
+		\expect -> [true, false, false, true] // Expected return for flags: root duplicate, third duplicate, fifth duplicate and note duplicate
+	]
 ];
 
 // Test voice spacing
@@ -327,6 +325,25 @@
 		};
 	);
 	flagTrue = nil; expTrue = nil; result = true;
+	~resetRules.();
+
+	(
+		flagFalse = ~test_noteDuplicate[\test01][1][0];
+		expFalse = ~test_noteDuplicate[\test01][1][1];
+
+		~enforceRootDuplicate = flagFalse;
+		~enforceThirdDuplicate = true;
+		"Before loop".postln;
+		~test_noteDuplicate[\test01][0].do { |c|
+			result = result && ~checkNoteDuplicate.(c);
+		};
+		if (result == expFalse) {
+			"TEST #0 | expected: % got: % | PASSED".format(expFalse, result).postln;
+		} {
+			"TEST #0 | expected: % got: % | FAILED".format(expFalse, result).postln;
+		};
+	);
+	flagFalse = nil; expFalse = nil; result = true;
 	~resetRules.();
 };
 ~test_checkNoteDuplicate.();
