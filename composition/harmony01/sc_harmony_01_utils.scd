@@ -185,27 +185,18 @@
 
 /*************************************************************************************/
 // Resets ~chordData dictionary values to nil
-~resetChordData = {
+~resetChordDicts = {
 
-	~chordData = Dictionary[
-		\chords    -> nil,
-		\chordProg -> nil
-	];
-	nil;
-};
+	~chordData[\chords]    = nil;
+	~chordData[\chordProg] = nil;
 
-/*************************************************************************************/
-// Resets ~chordState dictionary values to nil
-~resetChordState = {
+	~chordState[\currChord]       -= nil;
+	~chordState[\nextChord]       -= nil;
+	~chordState[\validNotes]      -= nil;
+	~chordState[\nextValidChords] -= nil;
+	~chordState[\lastValidChords] -= nil;
+	~chordState[\nextCipher]      -= nil;
 
-	~chordState = Dictionary[
-		\currChord       -> nil,
-		\nextChord       -> nil,
-		\validNotes      -> nil,
-		\nextValidChords -> nil,
-		\lastValidChords -> nil,
-		\nextCipher      -> nil
-	];
 	nil;
 };
 )

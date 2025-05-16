@@ -72,24 +72,63 @@
 	)
 );
 
-~test_CCPData = (
-	\chords: [
+~test_CCPData = Dictionary[
+	\chords -> [
 		[[48, 60, 64, 67], [60, 64, 67, 72]], // Root position
 		[[40, 55, 64, 72], [52, 55, 60, 64]], // First inversion
 		[[43, 55, 64, 72], [55, 60, 67, 76]]  // Second inversion
 	],
-	\flags: [
+	\flags -> [
 		[[true, false, false], true],
 		[[false, true, false], true],
 		[[false, false, true], true],
 		[[false, false, false], false]
 	],
-	\expect: [
+	\expect -> [
 		[true, false, false, true],
 		[false, true, false, true],
 		[false, false, true, true]
 	];
-);
+];
+)
+
+(
+//~test_CCPSubroutine = {
+
+~test_checkChordPosition = {
+	var chords = ~test_CCPData[\chords];
+	var expect = ~test_CCPData[\expect];
+	var result = true;
+
+	~chordState[\nextCipher] = 'CM';
+	~chordData[\chordProg] = [['CM', 2]];
+	~getChordDegreeArrays.();
+
+	~test_CCPData[\flags].do { |f, i|
+		var flagRP, flagFI, flagSI, flagCP;
+
+		#flagRP, flagFI, flagSI = f[0];
+		flagCP = f[1];
+
+		~enforceRootPosition    = flagRP;
+		~enforceFirstInversion  = flagFI;
+		~enforceSecondInversion = flagSI;
+		~enforceChordPosition   = flagCP;
+
+		chords.do { |a|
+			a. do { |c|
+				result = result && ~checkChordPosition.(c).postln;
+			};
+			(result == expect[i]);
+		};
+
+		flagRP = flagFI = flagSI = nil;
+		result = true;
+		~resetRules.();
+		nil;
+ 	}
+};
+~test_checkChordPosition.();
 )
 
 /*************************************************************************************/

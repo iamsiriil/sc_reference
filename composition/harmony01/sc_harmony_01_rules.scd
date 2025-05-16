@@ -31,7 +31,6 @@
 
 ~checkChordPosition = { |nextChord|
 	var bassNote = ~getNoteDegree.(nextChord[0]);
-
 	if (~enforceChordPosition == true) {
 
 		case
