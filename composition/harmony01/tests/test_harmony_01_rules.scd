@@ -27,19 +27,41 @@
 	\test00 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [true, true]],
 	\test01 -> [[[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], [false, false]]
 ];
-~test_noteDuplicates = Dictionary[
-	\chordSetRD -> Dictionary[
-		//\message-> "Chord Set #1: Root repetition",
-		\chords -> [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]],
-		\flags  -> Dictionary[
-			\flagRD -> [[true, false, false], true, "Test #1: Flags: RD true; TD false; FD false; ND true"], // [[RD Flag, TD Flag, FD Flag], ND Flag]
-			\flagTD -> [[false, true, false], true, "Test #2: Flags: RD false; TD true; FD false; ND true"],
-			\flagFD -> [[false, false, true], true, "Test #3: Flags: RD false; TD false; FD true; ND true"],
-			\flagND -> [[true, true, true], false, "Test #4: Flags: RD true; TD true; FD true; ND false"]
-		],
-		\expect -> [true, false, false, true]    // Expected return for flags: [RD, TD, FD, ND]
-	]
-];
+~test_CNDData = (//Dictionary[
+	\chordSetRD: (
+		\message: "Chord Set #1: Root repetition",
+		\chords: [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]],
+		\flags: (
+			\flagRD: [[true, false, false], true, "Test #1: Flags: RD true; TD false; FD false; ND true"],  // Expect: true
+			\flagTD: [[false, true, false], true, "Test #2: Flags: RD false; TD true; FD false; ND true"],  // Expect: false
+			\flagFD: [[false, false, true], true, "Test #3: Flags: RD false; TD false; FD true; ND true"],  // Expect: false
+			\flagND: [[true, true, true], false, "Test #4: Flags: RD true; TD true; FD true; ND false"]    // Expect: true
+		),
+		\expect: [true, false, false, true]    // Expected return for flags: [RD, TD, FD, ND]
+	),
+	\chordSetTD: (
+		\message: "Chord Set #2: Thist repetition",
+		\chords: [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], // create real array (dummy array)
+		\flags: (
+			\flagRD: [[true, false, false], true, "Test #1: Flags: RD true; TD false; FD false; ND true"],     // Expect: false
+			\flagTD: [[false, true, false], true, "Test #2: Flags: RD false; TD true; FD false; ND true"],     // Expect: true
+			\flagFD: [[false, false, true], true, "Test #3: Flags: RD false; TD false; FD true; ND true"],     // Expect: false
+			\flagND: [[false, false, false], false, "Test #4: Flags: RD false; TD false; FD false; ND false"] // Expect: true
+		),
+		\expect: [false, true, false, true]    // Expected return for flags: [RD, TD, FD, ND]
+	),
+	\chordSetFD: (
+		\message: "Chord Set #3: Fifth repetition",
+		\chords: [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]], //[[], [], [], [], [], []],
+		\flags: (
+			\flagRD: [[true, false, false], true, "Test #1: Flags: RD true; TD false; FD false; ND true"],    // Expect: false
+			\flagTD: [[false, true, false], true, "Test #2: Flags: RD false; TD true; FD false; ND true"],    // Expect: false
+			\flagFD: [[false, false, true], true, "Test #3: Flags: RD false; TD false; FD true; ND true"],    // Expect: true
+			\flagND: [[false, true, false], false, "Test #4: Flags: RD false; TD false; FD false; ND false"] // Expect: true
+		),
+		\expect: [false, false, true, true]    // Expected return for flags: [RD, TD, FD, ND]
+	)
+);//];
 
 // Test voice spacing
 ~test_voiceRange = Dictionary[
@@ -312,8 +334,8 @@
 
 	"before loop".postln;
 	~test_noteDuplicates[\chordSetRD].do { |dict|
-		//(dict[\message]).postln;
-		dict.postln;
+		dict[\message].postln;
+		//dict.postln;
 
 		dict[\flags].do { |f|
 			var flagRD, flagTD, flagFD, flagND;
@@ -348,6 +370,74 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(
+~test_CNDSubroutine = { |dict|
+	var result = true;
+	var chords = dict[\chords];
+	var expect = dict[\expect];
+
+	dict[\flags]. do { |f, i|
+		var flagRD, flagTD, flagFD, flagND;
+
+		#flagRD, flagTD, flagFD = f[0];
+		flagND = f[1];
+		f[2].postln;
+
+		~enforceNoteDuplicate  = flagND;
+		~enforceRootDuplicate  = flagRD;
+		~enforceThirdDuplicate = flagTD;
+		~enforceFifthDuplicate = flagFD;
+
+		chords.do { |c|
+			//c.postln;
+			result = result && ~checkNoteDuplicate.(c);
+		};
+		(result == expect[i]).postln;
+
+		~resetRules.();
+		result = true;
+ 	};
+	//"Result: %".format(result).postln;
+	result;
+};
+
+~test_checkNoteDuplicate = {
+	var result;
+
+	~chordState[\nextCipher] = 'CM';
+	~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
+	~getChordDegreeArrays.();
+
+	~test_CNDData.do { |dict|
+
+		dict[\message].postln;
+		result = ~test_CNDSubroutine.(dict);
+	};
+	nil;
+};
+
+~test_checkNoteDuplicate.();
+)
+Orde
+
+~test_CNDData[\chordSetRD][\chords][0]
+~test_CNDData[\chordSetRD][\flags]
 
 
 

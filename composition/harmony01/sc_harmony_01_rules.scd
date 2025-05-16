@@ -130,11 +130,14 @@
 };
 
 /*************************************************************************************/
-// Check root duplication
+// Checks wich degree gets repeated inside the chord,
+// and if chord is complete (e.g. All triad notes are present).
 
 ~checkNoteDuplicate = { |nextChord|
 	var degrees, chordAsSet, degreesAsSet;
 	var cipher = ~chordState[\nextCipher];
+
+	//"~checkNoteDuplicate: Function Call | nextChord: %".format(nextChord).postln;
 
 	degrees = ~getChordNotesDegree.(nextChord);
 
