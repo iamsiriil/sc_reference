@@ -11,12 +11,12 @@
 ~enforceParallelFifths        = true;  // Enforced in function ~chordIsValid, during backtrack
 
 ~enforceNoteDuplicate         = true;  // Enforced in function ~chordIsValid, during backtrack
-
 // Note duplication enforcement flags: 1 true to 2 false
 ~enforceRootDuplicate         = true;  // Enforced in function ~checkNoteDuplicate, during backtrack
 ~enforceThirdDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
 ~enforceFifthDuplicate        = false; // Enforced in function ~checkNoteDuplicate, during backtrack
 
+~enforceChordPosition         = true;  // Enforced in function ~chordIsValid, during backtrack
 ~enforceRootPosition          = true;  // Enforced in function ~getNextChords, during backtrack
 ~enforceFirstInversion        = false; // Enforced in function ~getNextChords, during backtrack
 ~enforceSecondInversion       = false; // Enforced in function ~getNextChords, during backtrack
@@ -196,6 +196,7 @@
 	~enforceRootDuplicate         = true;
 	~enforceThirdDuplicate        = false;
 	~enforceFifthDuplicate        = false;
+	~enforceChordPosition         = true;
 	~enforceRootPosition          = true;
 	~enforceFirstInversion        = false;
 	~enforceSecondInversion       = false;
