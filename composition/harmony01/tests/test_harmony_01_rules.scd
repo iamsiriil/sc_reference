@@ -110,10 +110,10 @@
 		#flagRP, flagFI, flagSI = f[0];
 		flagCP = f[1];
 
+		~enforceChordPosition   = flagCP;
 		~enforceRootPosition    = flagRP;
 		~enforceFirstInversion  = flagFI;
 		~enforceSecondInversion = flagSI;
-		~enforceChordPosition   = flagCP;
 
 		chords.do { |a|
 			a. do { |c|
