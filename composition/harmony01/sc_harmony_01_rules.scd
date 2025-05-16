@@ -188,6 +188,7 @@
 // Toggle rules
 
 ~toggleRules = { |count|
+
 	switch (count)
 	{ 0 } {
 		~enforceRootPosition = false;
@@ -199,7 +200,9 @@
 	}
 	{ 2 } {}
 	{ 3 };
+
 	~toggleCount = ~toggleCount + 1;
+	nil;
 };
 
 /*************************************************************************************/

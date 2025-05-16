@@ -30,11 +30,11 @@
 ~test_ND = Dictionary[
 	\chordSetRD -> Dictionary[
 		\chords -> [[48, 60, 64, 67], [48, 55, 60, 64], [48, 64, 67, 72], [52, 60, 72, 79], [52, 60, 67, 72], [52, 55, 60, 72]],
-		\flagRD -> [[true, false, false], true],
+		\flagRD -> [[true, false, false], true], // [[RD Flag, TD Flag, FD Flag], ND Flag]
 		\flagTD -> [[false, true, false], true],
 		\flagFD -> [[false, false, true], true],
 		\flagND -> [[true, true, true], false],
-		\expect -> [true, false, false, true] // Expected return for flags: root duplicate, third duplicate, fifth duplicate and note duplicate
+		\expect -> [true, false, false, true]    // Expected return for flags: [RD, TD, FD, ND]
 	]
 ];
 
