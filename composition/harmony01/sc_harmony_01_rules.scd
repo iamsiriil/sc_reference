@@ -31,19 +31,22 @@
 
 ~checkChordPosition = { |nextChord|
 	var bassNote = ~getNoteDegree.(nextChord[0]);
-	var result;
 
-	case
-	{ ~enforceRootPosition == true } {
-		result = (bassNote == "Rt");
-	}
-	{ ~enforceFirstInversion == true } {
-		result = bassNote.contains("3");
-	}
-	{ ~enforceSecondInversion == true } {
-		result = bassNote.contains("5");
+	if (~enforceChordPosition == true) {
+
+		case
+		{ ~enforceRootPosition == true } {
+			bassNote == "Rt";
+		}
+		{ ~enforceFirstInversion == true } {
+			bassNote.contains("3");
+		}
+		{ ~enforceSecondInversion == true } {
+			bassNote.contains("5");
+		};
+	} {
+		true;
 	};
-	result;
 };
 
 /*************************************************************************************/
@@ -150,13 +153,13 @@
 
 			case
 			{ ~enforceRootDuplicate == true } {
-				(degrees.count({ |item| item == "Rt" }) == 2);
+				(degrees.count({ |item| item == "Rt" }) == 2).postln;
 			}
 			{ ~enforceThirdDuplicate == true } {
-				(degrees.count({ |item| item.contains("3") }) == 2);
+				(degrees.count({ |item| item.contains("3") }) == 2).postln;
 			}
 			{ ~enforceFifthDuplicate == true } {
-				(degrees.count({ |item| item.contains("5") }) == 2);
+				(degrees.count({ |item| item.contains("5") }) == 2).postln;
 			}
 		} {
 			true;
