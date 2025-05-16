@@ -43,6 +43,7 @@
 ];
 
 /*************************************************************************************/
+// Get all chord notes, within MIDI range, and respective degrees as two separate arrays
 
 ~getChordDegreeArrays = {
 	var chordProg = ~chordData[\chordProg];
@@ -63,8 +64,8 @@
 	~chordData[\chords] = dictChords;
 };
 
-
 /*************************************************************************************/
+// Get chord notes, within MIDI range, and respective degrees, as paired arrays
 
 ~getChordDegreePairs = { //|chordProg|
 	var chordProg = ~chordData[\chordProg];
@@ -84,8 +85,8 @@
 	dict;
 };
 
-
 /*************************************************************************************/
+// Get all chord notes for each vocal range
 
 ~getChordVocalRange = { //|cipher|
 	var cipher = ~chordState[\nextCipher];
@@ -102,15 +103,15 @@
 	~chordState[\validNotes] = dict;
 };
 
-
 /*************************************************************************************/
+// Ensure only valid melodic intervals are played between chords
 
 ~resolveMelodicIntervals = {
 
 };
 
-
 /*************************************************************************************/
+// Remove valid notes other than common tones from respective voices
 
 ~resolveCommonTones = { //|currChord|
 	var currChord = ~chordState[\currChord];
@@ -130,7 +131,6 @@
 	};
 };
 
-
 /*************************************************************************************/
 // Get valid notes
 
@@ -146,7 +146,6 @@
 	};
 };
 
-
 /*************************************************************************************/
 // Get the corresponding degree of a note, given a cipher
 
@@ -157,7 +156,6 @@
 
 	degree[notes.indexOf(note)];
 };
-
 
 /*************************************************************************************/
 // Get an array with the corresponding degrees of the notes of a chord
@@ -171,7 +169,6 @@
 	degreeArray;
 };
 
-
 /*************************************************************************************/
 // list of note names (e.g. C)
 
@@ -180,7 +177,6 @@
 };
 
 /*************************************************************************************/
-
 // list of note names, with respective octave number (e.g. C4)
 
 ~getNoteNameOct = { |notes|

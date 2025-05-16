@@ -26,7 +26,6 @@
 // Toggle rules counter
 ~toggleCount = 0;
 
-
 /*************************************************************************************/
 // Check range between voices
 
@@ -50,7 +49,6 @@
 		true;
 	};
 };
-
 
 /*************************************************************************************/
 // Check for parallel octaves
@@ -81,7 +79,6 @@
 	result.not;
 };
 
-
 /*************************************************************************************/
 // Check for parallel fifths
 
@@ -111,7 +108,6 @@
 	};
 	result.not;
 };
-
 
 /*************************************************************************************/
 // Check root duplication
@@ -146,16 +142,6 @@
 		false;
 	};
 };
-/*~enforceRootDuplicate = true;
-~enforceThirdDuplicate = false;
-~enforceFifthDuplicate = false;
-
-~nextChord = [48, 55, 64, 72];
-~chordState[\nextCipher] = 'CM';
-~chordData[\chordProg] = [['CM', 2], ['FM', 1], ['GM', 1], ['CM', 2]];
-~getChordDegreeArrays.();
-~checkNoteDuplicate.(~nextChord);*/
-
 
 /*************************************************************************************/
 // Final check8 before chord gets added to validNextChord array
@@ -175,7 +161,6 @@
 	result;
 };
 
-
 /*************************************************************************************/
 // Toggle rules
 
@@ -193,7 +178,6 @@
 	{ 3 };
 	~toggleCount = ~toggleCount + 1;
 };
-
 
 /*************************************************************************************/
 // Reset rules
