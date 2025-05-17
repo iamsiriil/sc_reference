@@ -29,6 +29,48 @@
 
 	"\ni: %; buildChord: %".format(i, buildChord.put(1, 1)).postln;
 };
+
+~getNextChords2 = { |buildChord, i|
+	var v = ~voiceData[\voiceNames].postln;
+	var result = nil;
+
+	block { |return|
+
+		"First if: numVoices: %".format(~voiceData[\numVoices]).postln;
+		if ((i == ~voiceData[\numVoices]) && (~chordIsValid.(buildChord).postln)) {
+			~chordState[\nextValidChords].add(buildChord.copy);
+			result = true;
+			return.value(result);
+		};
+
+		"Second if".postln;
+
+		"Valid Notes: % | i: %".format(~chordState[\validNotes][i][0], i).postln;
+
+		if ((i > 0) && (~chordState[\validNotes][i][0].size == 1)) {
+			buildChord.put(i, ~chordState[\validNotes][i][0].postln);
+			result = ~getNextChords2.(buildChord, (i + 1));
+			return.value(result);
+		};
+
+		"Loop".postln;
+		~chordState[\validNotes][i].do { |n|
+			buildChord.put(i, n);
+
+			if (~checkVoiceSpacing.(buildChord, i)) {
+				result = ~getNextChords2.(buildChord, (i + 1));
+				if (result == true) {return.value(result)};
+			} {
+				buildChord.put(i, 0);
+			};
+		};
+
+		result = false;
+		return.value(result);
+	};
+
+	result;
+};
 )
 
 (
@@ -49,10 +91,11 @@ var buildChord = Array.fill(4, {0});
 ~getChordDegreeArrays.();
 
 // With that data, generate valid candidates for each voice for the next chord
-~getValidNotes.().postln;
+~getValidNotes.();
 
+~chordState[\validNotes][\bas].postln;
 // Run ~getNextChords to backtrack next valid chords
-~getNextChords.(buildChord, 0);
+~getNextChords2.(buildChord, 0);
 
 )
 ~resetChordDicts.(); ~resetRules.();
