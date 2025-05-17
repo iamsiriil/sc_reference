@@ -94,6 +94,8 @@
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
 	var voiceRange, dict;
 
+	"~getChordVocalRange: Function Call".postln;
+
 	dict = Dictionary.new();
 
 	voices.do { |v|
@@ -118,6 +120,8 @@
 	var validNotes = ~chordState[\validNotes];
 	var voiceNames = ~voiceData[\voiceNames];
 
+	"~resolveCommonTones: Function Call".postln;
+
 	if (~enforceRootPosition == true) {
 		voiceNames = voiceNames.drop(1);
 		currChord = currChord.drop(1);
@@ -138,10 +142,10 @@
 
 	~getChordVocalRange.();
 
-	if (~enforceMelodicIntervals == true) {
+	/*if (~enforceMelodicIntervals == true) {
 		~resolveMelodicIntervals.();
-	};
-	if (~enforceCommonTone == true) {
+	};*/
+	if (~enforceCommonTones == true) {
 		~resolveCommonTones.();
 	};
 };
