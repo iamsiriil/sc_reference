@@ -43,18 +43,18 @@
 			return.value(result);
 		};
 
+
+		"Valid Notes: % | i: %".format(~chordState[\validNotes][v[i]], i).postln;
+
+		if ((i > 0) && (~chordState[\validNotes][v[i]].size == 1)) {
 		"Second if".postln;
-
-		"Valid Notes: % | i: %".format(~chordState[\validNotes][i][0], i).postln;
-
-		if ((i > 0) && (~chordState[\validNotes][i][0].size == 1)) {
-			buildChord.put(i, ~chordState[\validNotes][i][0].postln);
+			buildChord.put(i, ~chordState[\validNotes][v[i]].postln);
 			result = ~getNextChords2.(buildChord, (i + 1));
 			return.value(result);
 		};
 
 		"Loop".postln;
-		~chordState[\validNotes][i].do { |n|
+		~chordState[\validNotes][v[i]].do { |n|
 			buildChord.put(i, n);
 
 			if (~checkVoiceSpacing.(buildChord, i)) {
@@ -93,7 +93,7 @@ var buildChord = Array.fill(4, {0});
 // With that data, generate valid candidates for each voice for the next chord
 ~getValidNotes.();
 
-~chordState[\validNotes][\bas].postln;
+~chordState[\validNotes][\alt].size.postln;
 // Run ~getNextChords to backtrack next valid chords
 ~getNextChords2.(buildChord, 0);
 
