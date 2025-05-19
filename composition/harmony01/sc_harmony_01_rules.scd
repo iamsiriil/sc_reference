@@ -214,11 +214,11 @@
 
 	"~toggleCount = %".format(~toggleCount).postln;
 	switch (count)
-	{ 0 } {
+	{ 1 } {
 		~enforceRootPosition = false;
 		~enforceFirstInversion = true;
 	}
-	{ 1 } {
+	{ 0 } {
 		~enforceRootDuplicate = false;
 		~enforceThirdDuplicate = true;
 	};

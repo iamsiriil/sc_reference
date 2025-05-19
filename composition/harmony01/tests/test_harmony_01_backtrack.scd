@@ -30,9 +30,9 @@
 				result = true;
 				return.value(result);
 			} {
-				~toggleRules.();
-				result = false;
-				return.value(result);
+				//~toggleRules.();
+				//result = false;
+				//return.value(result);
 			}
 		};
 
@@ -71,9 +71,9 @@ var buildChord = Array.fill(4, {0}).postln;
 ~loggerCount = 0;
 
 // Update chordData and chordSate dicts with input data
-~chordData[\chordProg] = [['CM', 2], ['G#d', 2]];
-~chordState[\currChord] = [48, 55, 60, 64];
-~chordState[\nextCipher] = 'G#d';
+~chordData[\chordProg] = [['CM', 2], ['C#d', 2]];
+~chordState[\currChord] = [48, 55, 64, 72];
+~chordState[\nextCipher] = 'C#d';
 
 ~chordState[\nextValidChords] = OrderedIdentitySet.new();
 
@@ -84,12 +84,19 @@ var buildChord = Array.fill(4, {0}).postln;
 ~getValidNotes.();
 
 ~chordState[\validNotes][\ten].postln;
+
+~enforceNoteDuplicate = false;
+~enforceRootDuplicate = true;
+~enforceThirdDuplicate = false;
+~enforceFifthDuplicate = false;
+
 // Run ~getNextChords to backtrack next valid chords
-~getNextChords02.(buildChord, 0);
+~getNextChords02.(buildChord, 0).postln;
 ~chordState[\nextValidChords].postln;
 
+~resetChordDicts.(); ~resetRules.(); ~toggleCount = 0;
+nil;
 )
-~resetChordDicts.(); ~resetRules.();
 ~voiceData[\numVoices]
 /*************************************************************************************/
 // Experiments
