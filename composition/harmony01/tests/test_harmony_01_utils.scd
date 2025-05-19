@@ -11,6 +11,7 @@
 // Chord progressions for ~getChordDegreePairs and ~getChordDegreeArrays
 (
 ~chordProg = [
+	[['CM', 2]],
 	[['CM', 2], ['FM', 1], ['GM', 1], ['CM', 4]],
 	[['F#m', 1], ['EM', 1], ['C#A', 1], ['Bm', 2], ['Ed', 1], ['F#m']],
 	[['Ebm', 1], ['Gm', 1], ['BA', 1], ['BbM', 2], ['Dm', 1], ['Ebm']],
@@ -82,9 +83,24 @@
 )
 
 (
-~test_getChordDegreeArrays = {
+~test_resolveCommonTones = {
+	~logger = true;
+	~loggerCount = 0;
 
+	~enforceRootPosition = false;
+
+	~chordData[\chordProg] = [['CM', 2], ['DM', 2]];
+	~chordState[\currChord] = [48, 55, 60, 64];
+	~chordState[\nextCipher] = 'DM';
+
+
+	~getChordDegreeArrays.();
+	~getChordVocalRange.();
+
+	~resolveCommonTones.();
 };
+~test_resolveCommonTones.();
+~chordState[\validNotes][\spn];
 )
 
 

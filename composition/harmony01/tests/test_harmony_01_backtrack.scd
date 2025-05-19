@@ -8,107 +8,107 @@
 - HARMONY 01 / Backtrack
 **************************************************************************************/
 // Test fixtures
-
-~chordState[\validNotes][\spn];
-
 (
-// Gets all valid chords
-~getNextChords = { |buildChord, i|
+~logger = true;
+~loggerCount = 0;
+)
 
-	"\n~chordState:\n".postln;
-
-	~chordState.do { |i| i.postln };
-
-	"\n~chordData:\n".postln;
-
-	~chordData.do { |i| i.postln };
-
-	"\nvoiceData:\n".postln;
-
-	~voiceData.do { |i| i.postln };
-
-	"\ni: %; buildChord: %".format(i, buildChord.put(1, 1)).postln;
-};
-
-~getNextChords2 = { |buildChord, i|
-	var v = ~voiceData[\voiceNames].postln;
+/*************************************************************************************/
+// Gets first valid chord
+(
+~getNextChords02 = { |buildChord, i|
+	var v = ~voiceData[\voiceNames][i];
 	var result = nil;
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #% : ~getNextChords02: Function Call".format(~loggerCount).postln; };
 
 	block { |return|
 
-		"First if: numVoices: %".format(~voiceData[\numVoices]).postln;
-		if ((i == ~voiceData[\numVoices]) && (~chordIsValid.(buildChord).postln)) {
-			~chordState[\nextValidChords].add(buildChord.copy);
-			result = true;
+		if (i == 4) {
+			if (~chordIsValid.(buildChord)) {
+				~chordState[\nextValidChords].add(buildChord.copy);
+				result = true;
+				return.value(result);
+			} {
+				~toggleRules.();
+				result = false;
+				return.value(result);
+			}
+		};
+
+		if ((i > 0) && (~chordState[\validNotes][v].size == 1)) {
+			buildChord[i] = ~chordState[\validNotes][v].asArray.at(0);
+			result = ~getNextChords02.(buildChord, (i + 1));
 			return.value(result);
 		};
 
+		~chordState[\validNotes][v].do { |n|
 
-		"Valid Notes: % | i: %".format(~chordState[\validNotes][v[i]], i).postln;
-
-		if ((i > 0) && (~chordState[\validNotes][v[i]].size == 1)) {
-		"Second if".postln;
-			buildChord.put(i, ~chordState[\validNotes][v[i]].postln);
-			result = ~getNextChords2.(buildChord, (i + 1));
-			return.value(result);
-		};
-
-		"Loop".postln;
-		~chordState[\validNotes][v[i]].do { |n|
-			buildChord.put(i, n);
+			buildChord[i] = n;
+			"Build Chord: %".format(buildChord).postln;
 
 			if (~checkVoiceSpacing.(buildChord, i)) {
-				result = ~getNextChords2.(buildChord, (i + 1));
-				if (result == true) {return.value(result)};
-			} {
-				buildChord.put(i, 0);
+				result = ~getNextChords02.(buildChord, (i + 1));
+				if (result == true) { return.value(result) };
 			};
+
+			buildChord[i] = 0;
+			"Build Chord: %".format(buildChord).postln;
+
 		};
 
 		result = false;
 		return.value(result);
 	};
-
 	result;
 };
 )
 
 (
-var buildChord = Array.fill(4, {0});
+var buildChord = Array.fill(4, {0}).postln;
 
-// Create a progression, first chord and provide the next cipher, as input
-~chordProg = [['CM', 2], ['FM', 2]];
-~currChord = [48, 55, 60, 64];        // CM chord
-~nextCipher = 'FM';                   // Next chord in FM
+~logger = true;
+~loggerCount = 0;
 
 // Update chordData and chordSate dicts with input data
-~chordData[\chordProg] = ~chordProg;
-~chordState[\currChord] = ~currChord;
-~chordState[\nextCipher] = ~nextCipher;
-~chordState[\nextValidChords] = Array.new(100);
+~chordData[\chordProg] = [['CM', 2], ['G#d', 2]];
+~chordState[\currChord] = [48, 55, 60, 64];
+~chordState[\nextCipher] = 'G#d';
+
+~chordState[\nextValidChords] = OrderedIdentitySet.new();
 
 // Gather midi note numbers and note degree information for all chords in progression
 ~getChordDegreeArrays.();
-
+//~chordData[\chords][\EM][\notes];
 // With that data, generate valid candidates for each voice for the next chord
 ~getValidNotes.();
 
-~chordState[\validNotes][\alt].size.postln;
+~chordState[\validNotes][\ten].postln;
 // Run ~getNextChords to backtrack next valid chords
-~getNextChords2.(buildChord, 0);
+~getNextChords02.(buildChord, 0);
+~chordState[\nextValidChords].postln;
 
 )
 ~resetChordDicts.(); ~resetRules.();
+~voiceData[\numVoices]
+/*************************************************************************************/
+// Experiments
 
-~chordState[\nextValidChords];
+~chordState[\validNotes][\alt].asArray[0]
 
+(
+var set = OrderedIdentitySet.new;
+var num = 0;
 
+set.add([60]);
+set.asArray[0][0];
+)
 
+~set = OrderedIdentitySet.newFrom([[10]]);
+~set.asArray[0][0];
 
-
-
-
-
+y = [\a, \b, \c];
+y.atAll([0, 2]);
 
 
 

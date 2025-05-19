@@ -42,6 +42,8 @@
 	\nextCipher      -> nil   // Symbol
 ];
 
+~logger = true;
+
 /*************************************************************************************/
 // Get all chord notes, within MIDI range, and respective degrees as two separate arrays
 
@@ -49,19 +51,22 @@
 	var chordProg = ~chordData[\chordProg];
 	var ciphers, dictChords, dict;
 
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getChordDegreeArrays: Function Call".format(~loggerCount).postln; };
+
 	ciphers = chordProg.collect { |c| c[0] };
-	ciphers.asSet;
+	ciphers.asSet.postln;
 
 	dict = Dictionary.new();
 	dictChords = Dictionary.new();
 
 	ciphers.do { |c|
-		dict[\notes] = ~triads[c][\notes];
-		dict[\degree] = ~triads[c][\degree].wrapExtend(~triads[c][\notes].size);
+		dict[\notes] = ~triads[c][\notes].postln;
+		dict[\degree] = (~triads[c][\degree].wrapExtend(~triads[c][\notes].size));
 
 		dictChords[c] = dict;
 	};
 	~chordData[\chords] = dictChords;
+	nil;
 };
 
 /*************************************************************************************/
@@ -94,7 +99,7 @@
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
 	var voiceRange, dict;
 
-	"~getChordVocalRange: Function Call".postln;
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getChordVocalRange: Function Call".format(~loggerCount).postln; };
 
 	dict = Dictionary.new();
 
@@ -103,6 +108,7 @@
 		dict[v] = chordNotes & (voiceRange[0]..voiceRange[1]);
 	};
 	~chordState[\validNotes] = dict;
+	nil;
 };
 
 /*************************************************************************************/
@@ -120,12 +126,12 @@
 	var validNotes = ~chordState[\validNotes];
 	var voiceNames = ~voiceData[\voiceNames];
 
-	"~resolveCommonTones: Function Call".postln;
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~resolveCommonTones: Function Call".format(~loggerCount).postln; };
 
-	if (~enforceRootPosition == true) {
+	//if (~enforceRootPosition == true) {
 		voiceNames = voiceNames.drop(1);
 		currChord = currChord.drop(1);
-	};
+	//};
 
 	voiceNames.do { |v, i|
 		var set = [currChord[i]];
@@ -133,12 +139,15 @@
 			~chordState[\validNotes][v] = (~chordState[\validNotes][v] & set);
 		};
 	};
+	nil;
 };
 
 /*************************************************************************************/
 // Get valid notes
 
 ~getValidNotes = {
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getValidNotes: Function Call".format(~loggerCount).postln; };
 
 	~getChordVocalRange.();
 
@@ -148,6 +157,7 @@
 	if (~enforceCommonTones == true) {
 		~resolveCommonTones.();
 	};
+	nil;
 };
 
 /*************************************************************************************/
@@ -158,6 +168,10 @@
 	var notes = ~chordData[\chords][cipher][\notes];
 	var degree = ~chordData[\chords][cipher][\degree];
 
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getNoteDegree: Function Call".format(~loggerCount).postln; };
+	//"note: %".format(note).postln;
+
 	degree[notes.indexOf(note)];
 };
 
@@ -166,6 +180,8 @@
 
 ~getChordNotesDegree = { |chord|
 	var degreeArray = Array.new(4);
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getChordNotesDegree: Function Call".format(~loggerCount).postln; };
 
 	chord.do { |n, i|
 		degreeArray.add(~getNoteDegree.(n));
@@ -177,6 +193,9 @@
 // list of note names (e.g. C)
 
 ~getNoteName = { |note|
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getNoteName: Function Call".format(~loggerCount).postln; };
+
 	note.collect { |n| ~midiRange[\name][n] };
 };
 
@@ -184,6 +203,9 @@
 // list of note names, with respective octave number (e.g. C4)
 
 ~getNoteNameOct = { |note|
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getNoteNameOct: Function Call".format(~loggerCount).postln; };
+
 	note.collect { |n| ~midiRange[\octave][n] };
 };
 
@@ -194,12 +216,12 @@
 	~chordData[\chords]    = nil;
 	~chordData[\chordProg] = nil;
 
-	~chordState[\currChord]       -= nil;
-	~chordState[\nextChord]       -= nil;
-	~chordState[\validNotes]      -= nil;
-	~chordState[\nextValidChords] -= nil;
-	~chordState[\lastValidChords] -= nil;
-	~chordState[\nextCipher]      -= nil;
+	~chordState[\currChord]       = nil;
+	~chordState[\nextChord]       = nil;
+	~chordState[\validNotes]      = nil;
+	~chordState[\nextValidChords] = nil;
+	~chordState[\lastValidChords] = nil;
+	~chordState[\nextCipher]      = nil;
 
 	nil;
 };

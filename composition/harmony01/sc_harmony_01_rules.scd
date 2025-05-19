@@ -26,11 +26,15 @@
 // Toggle rules counter
 ~toggleCount = 0;
 
+~logger = true;
+
 /*************************************************************************************/
 // Check chord position: Root, first inversion, second inversion
 
 ~checkChordPosition = { |nextChord|
 	var bassNote = ~getNoteDegree.(nextChord[0]);
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkChordPosition: Function Call".format(~loggerCount).postln; };
 
 	if (~enforceChordPosition == true) {
 
@@ -54,6 +58,8 @@
 
 ~checkVoiceSpacing = { |nextChord, i|
 	var cross, n;
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkVoiceSpacing: Function Call".format(~loggerCount).postln; };
 
 	if (i > 0) {
 		n = (nextChord[i] - nextChord[i - 1]);
@@ -83,6 +89,9 @@
 	var octaves = [12, 24, 36];
 
 	var i = 0, j;
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkParallelOctaves: Function Call".format(~loggerCount).postln; };
+
 	while {i < (numVoices - 1)} {
 
 		j = i + 1;
@@ -112,6 +121,9 @@
 	var fifths = [7, 19, 31, 43];
 
 	var i = 0, j;
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkParallelFifths: Function Call".format(~loggerCount).postln; };
+
 	while {i < (numVoices - 1)} {
 
 		j = i + 1;
@@ -140,7 +152,7 @@
 	var degrees, chordAsSet, degreesAsSet;
 	var cipher = ~chordState[\nextCipher];
 
-	//"~checkNoteDuplicate: Function Call | nextChord: %".format(nextChord).postln;
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkNoteDuplicate: Function Call".format(~loggerCount).postln; };
 
 	degrees = ~getChordNotesDegree.(nextChord);
 
@@ -175,6 +187,9 @@
 ~chordIsValid = { |nextChord|
 	var result = true;
 
+
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~chordIsValid: Function Call".format(~loggerCount).postln; };
+
 	if (~enforceChordPosition == true) {
 		result = result && ~checkChordPosition.(nextChord);
 	};
@@ -195,6 +210,9 @@
 
 ~toggleRules = { |count|
 
+	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~toggleRules: Function Call".format(~loggerCount).postln; };
+
+	"~toggleCount = %".format(~toggleCount).postln;
 	switch (count)
 	{ 0 } {
 		~enforceRootPosition = false;
@@ -203,9 +221,9 @@
 	{ 1 } {
 		~enforceRootDuplicate = false;
 		~enforceThirdDuplicate = true;
-	}
-	{ 2 } {}
-	{ 3 };
+	};
+	/*{ 2 } {}
+	{ 3 };*/
 
 	~toggleCount = ~toggleCount + 1;
 	nil;
