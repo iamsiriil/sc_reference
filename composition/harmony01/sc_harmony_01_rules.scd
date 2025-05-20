@@ -187,7 +187,6 @@
 ~chordIsValid = { |nextChord|
 	var result = true;
 
-
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~chordIsValid: Function Call".format(~loggerCount).postln; };
 
 	if (~enforceChordPosition == true) {
@@ -213,17 +212,78 @@
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~toggleRules: Function Call".format(~loggerCount).postln; };
 
 	"~toggleCount = %".format(~toggleCount).postln;
-	switch (count)
-	{ 1 } {
-		~enforceRootPosition = false;
-		~enforceFirstInversion = true;
-	}
-	{ 0 } {
+	switch(count)
+	{ 0 } { // Root position with third duplicate
 		~enforceRootDuplicate = false;
 		~enforceThirdDuplicate = true;
+		~enforceFifthDuplicate = false;
+	}
+	{ 1 } { // Root position with fifth duplicate
+		~enforceRootDuplicate = false;
+		~enforceThirdDuplicate = false;
+		~enforceFifthDuplicate = true;
+	}
+	{ 2 } { // First inversion with root duplicate
+		~enforceRootPosition = false;
+		~enforceFirstInversion = true;
+		~enforceSecondInversion = false;
+
+		~enforceRootDuplicate = true;
+		~enforceThirdDuplicate = false;
+		~enforceFifthDuplicate = false;
+	}
+	{ 3 } { // First inversion with third duplicate
+		~enforceRootPosition = false;
+		~enforceFirstInversion = true;
+		~enforceSecondInversion = false;
+
+		~enforceRootDuplicate = false;
+		~enforceThirdDuplicate = true;
+		~enforceFifthDuplicate = false;
+	}
+	{ 4 } { // First inversion with fifth duplicate
+		~enforceRootPosition = false;
+		~enforceFirstInversion = true;
+		~enforceSecondInversion = false;
+
+		~enforceRootDuplicate = false;
+		~enforceThirdDuplicate = false;
+		~enforceFifthDuplicate = true;
+	}
+	{ 5 } { // Second inversion with root duplicate
+		~enforceRootPosition = false;
+		~enforceFirstInversion = false;
+		~enforceSecondInversion = true;
+
+		~enforceRootDuplicate = true;
+		~enforceThirdDuplicate = false;
+		~enforceFifthDuplicate = false;
+	}
+	{ 6 } { // Second inversion with third duplicate
+		~enforceRootPosition = false;
+		~enforceFirstInversion = false;
+		~enforceSecondInversion = true;
+
+		~enforceRootDuplicate = false;
+		~enforceThirdDuplicate = true;
+		~enforceFifthDuplicate = false;
+	}
+	{ 7 } { // Second inversion with fifth duplicate
+		~enforceRootPosition = false;
+		~enforceFirstInversion = false;
+		~enforceSecondInversion = true;
+
+		~enforceRootDuplicate = false;
+		~enforceThirdDuplicate = false;
+		~enforceFifthDuplicate = true;
+	}
+	{ 8 } { // Any duplication and position, no parallel checks
+		~enforceNoteDuplicate = false;
+		~enforceChordPosition = false;
+
+		~enforceParallelOctaves = false;
+		~enforceParallelfifths = false;
 	};
-	/*{ 2 } {}
-	{ 3 };*/
 
 	~toggleCount = ~toggleCount + 1;
 	nil;

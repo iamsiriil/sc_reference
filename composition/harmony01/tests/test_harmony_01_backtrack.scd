@@ -29,11 +29,7 @@
 				~chordState[\nextValidChords].add(buildChord.copy);
 				result = true;
 				return.value(result);
-			} {
-				//~toggleRules.();
-				//result = false;
-				//return.value(result);
-			}
+			};
 		};
 
 		if ((i > 0) && (~chordState[\validNotes][v].size == 1)) {
@@ -54,7 +50,6 @@
 
 			buildChord[i] = 0;
 			"Build Chord: %".format(buildChord).postln;
-
 		};
 
 		result = false;
@@ -62,8 +57,59 @@
 	};
 	result;
 };
+
+/*************************************************************************************/
+~gridPositionCounter = 0;
+~createChordGrid = { |resolution, chord, duration|
+	var totalDuration = ~chordData[\chordProg].collect { |p| p[1] };
+	var grid = Array.new(totalDuration.sum / resolution);
+	var chordDurationArray = Array.fill(4, {[]});
+
+	chord.do { |n, i|
+		var array = [n, duration];
+		chordDurationArray.add(array);
+	}
+
+	(duration / resolution).do { |i|
+
+		if (i == 0){
+			grid[~gridPositionCounter] = chordDurationArray;
+		} {
+			grid[~gridPositionCounter] = [nil, nil, nil, nil];
+		};
+		~gridPositionCounter = ~gridPositionCounter + i;
+	}
+}
+/*************************************************************************************/
+~harmonizeProg = { |buildChord, firstChord|
+	var resolution = 1;
+	var harmony = Array.new(~chordData[\chordProg].size / resolution);
+
+	harmony.add(firstChord.copy);
+	~chordState[\currChord] = firstChord;
+
+	~chordData[\chordProg].do { |c|
+
+		~chordState[\nextCipher] = c[0];
+
+		if (c[0].contains("A", 1) || c[0].contains("d", 1)) {
+			//~enforceParallelOctaves = false;
+			~enforceParallelFifths  = false;
+		};
+
+		while { ~getNextChords02.(buildChord, 0) == false } { ~toggleRules.() };
+
+		~resetRule.();
+
+		~chordState[\currChord] = ~chordState[\nextValidChords].choose;
+		harmony.add(~chordState[\currChord].copy);
+	}
+}
 )
 
+
+/*************************************************************************************/
+// Run test
 (
 var buildChord = Array.fill(4, {0}).postln;
 
@@ -71,55 +117,38 @@ var buildChord = Array.fill(4, {0}).postln;
 ~loggerCount = 0;
 
 // Update chordData and chordSate dicts with input data
-~chordData[\chordProg] = [['CM', 2], ['C#d', 2]];
+~chordData[\chordProg] = [['CM', 2], ['AbA', 2]];
 ~chordState[\currChord] = [48, 55, 64, 72];
-~chordState[\nextCipher] = 'C#d';
+~chordState[\nextCipher] = 'AbA';
 
 ~chordState[\nextValidChords] = OrderedIdentitySet.new();
 
 // Gather midi note numbers and note degree information for all chords in progression
 ~getChordDegreeArrays.();
-//~chordData[\chords][\EM][\notes];
+
 // With that data, generate valid candidates for each voice for the next chord
 ~getValidNotes.();
 
-~chordState[\validNotes][\ten].postln;
-
-~enforceNoteDuplicate = false;
-~enforceRootDuplicate = true;
-~enforceThirdDuplicate = false;
-~enforceFifthDuplicate = false;
-
 // Run ~getNextChords to backtrack next valid chords
-~getNextChords02.(buildChord, 0).postln;
+while { ~getNextChords02.(buildChord, 0) == false } { ~toggleRules.(~toggleCount) };
+
+~toggleCount.postln;
+//~getNextChords02.(buildChord, 0).postln;
 ~chordState[\nextValidChords].postln;
 
-~resetChordDicts.(); ~resetRules.(); ~toggleCount = 0;
-nil;
+~resetChordDicts.(); ~resetRules.();
 )
-~voiceData[\numVoices]
+
 /*************************************************************************************/
 // Experiments
 
-~chordState[\validNotes][\alt].asArray[0]
 
-(
-var set = OrderedIdentitySet.new;
-var num = 0;
+~a = Array.fill(8, {[]});
+~a[0] = [nil, nil, nil, nil];
 
-set.add([60]);
-set.asArray[0][0];
-)
+"AA".contains("A", 1);
 
-~set = OrderedIdentitySet.newFrom([[10]]);
-~set.asArray[0][0];
+~prog = [['CM', 2], ['AbA', 2], ['EM', 1], ['CM', 4]];
 
-y = [\a, \b, \c];
-y.atAll([0, 2]);
-
-
-
-
-
-
+~a = ~prog.collect { |p| p[1] };
 
