@@ -31,7 +31,8 @@
 	\chords        -> nil,        // Dictionary with arrays
 	\chordProg     -> nil,         // 2D Array
 	\totalDuration -> nil,
-	\resolution    -> nil
+	\resolution    -> nil,
+	\chordGrid     -> nil
 ];
 
 // Data structure containing the state of chords as they're built and played'

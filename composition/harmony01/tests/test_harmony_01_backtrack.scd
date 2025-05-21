@@ -66,30 +66,30 @@
 
 	~chordData[\totalDuration] = dur.sum;
 	~chordData[\resolution] = dur.minItem;
+	nil;
 };
 
 /*************************************************************************************/
 ~gridPositionCounter = 0;
-~createChordGrid = { |resolution, chord, duration|
-	var gridSize = (~chordData[\totalDuration] / ~chordData[\resolution]);
-	var grid = Array.new(gridSize);
+~createChordGrid = { |chord, chordDur|
 	var chordDurationArray = Array.fill(4, {[]});
+	var chordSize = (chordDur / ~chordData[\resolution]);
 
 	chord.do { |n, i|
-		var array = [n, duration];
-		chordDurationArray.add(array);
-	}
+		var array = [n, chordDur];
+		chordDurationArray[i] = array;
+	};
 
-	gridSize.do { |i|
+	chordSize.do { |j|
 
-		if (i == 0){
-			grid[~gridPositionCounter] = chordDurationArray;
+		if (j == 0){
+			~chordData[\chordGrid].add(chordDurationArray);
 		} {
-			grid[~gridPositionCounter] = [nil, nil, nil, nil];
+			~chordData[\chordGrid].add([nil, nil, nil, nil]);
 		};
-		~gridPositionCounter = ~gridPositionCounter + i;
-	}
-}
+	};
+	nil;
+};
 /*************************************************************************************/
 ~harmonizeProg = { |firstChord|
 	var resolution = 1;
@@ -166,6 +166,20 @@ while { ~getNextChords02.(buildChord, 0) == false } { ~toggleRules.(~toggleCount
 
 /*************************************************************************************/
 // Experiments
+
+~chordData[\chordProg] = [['CM', 2], ['FM', 0.5], ['GM', 0.5], ['CM', 1]];
+~getDuration.();
+~chordData[\resolution];
+~chordData[\totalDuration];
+
+~gridSize = (~chordData[\totalDuration] / ~chordData[\resolution]).asInteger;
+
+~chordData[\chordGrid] = Array.new(~gridSize);
+//~chordData[\chordGrid].add([nil, nil, nil, nil])
+
+~grid = ~createChordGrid.([48, 55, 64, 72], 2);
+
+~chordData[\chordGrid];
 
 
 ~a = Array.fill(8, {[]});
