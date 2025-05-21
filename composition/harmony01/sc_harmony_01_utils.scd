@@ -28,8 +28,10 @@
 
 // Data structure containing sets of necessary chords and the chord progression to be played
 ~chordData = Dictionary[
-	\chords    -> nil,        // Dictionary with arrays
-	\chordProg -> nil         // 2D Array
+	\chords        -> nil,        // Dictionary with arrays
+	\chordProg     -> nil,         // 2D Array
+	\totalDuration -> nil,
+	\resolution    -> nil
 ];
 
 // Data structure containing the state of chords as they're built and played'

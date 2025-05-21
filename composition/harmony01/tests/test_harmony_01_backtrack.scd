@@ -2,7 +2,7 @@
 "../sc_harmony_01_lib.scd".loadRelative;
 "../sc_harmony_01_utils.scd".loadRelative;
 "../sc_harmony_01_rules.scd".loadRelative;
-"../sc_harmony_01_backtrack".loadRelative;
+"../sc_harmony_01_backtrack.scd".loadRelative;
 )
 
 /**************************************************************************************
@@ -60,10 +60,19 @@
 };
 
 /*************************************************************************************/
+
+~getDuration = {
+	var dur = ~chordData[\chordProg].collect { |c| c[1]};
+
+	~chordData[\totalDuration] = dur.sum;
+	~chordData[\resolution] = dur.minItem;
+};
+
+/*************************************************************************************/
 ~gridPositionCounter = 0;
 ~createChordGrid = { |resolution, chord, duration|
-	var totalDuration = ~chordData[\chordProg].collect { |p| p[1] };
-	var grid = Array.new(totalDuration.sum / resolution);
+	var gridSize = (~chordData[\totalDuration] / ~chordData[\resolution]);
+	var grid = Array.new(gridSize);
 	var chordDurationArray = Array.fill(4, {[]});
 
 	chord.do { |n, i|
@@ -71,7 +80,7 @@
 		chordDurationArray.add(array);
 	}
 
-	(duration / resolution).do { |i|
+	gridSize.do { |i|
 
 		if (i == 0){
 			grid[~gridPositionCounter] = chordDurationArray;
@@ -82,19 +91,34 @@
 	}
 }
 /*************************************************************************************/
-~harmonizeProg = { |buildChord, firstChord|
+~harmonizeProg = { |firstChord|
 	var resolution = 1;
 	var harmony = Array.new(~chordData[\chordProg].size / resolution);
+	var buildChord = Array.fill(4, {0}).postln;
+	~chordData[\progGrid] = Array.new()
 
-	harmony.add(firstChord.copy);
-	~chordState[\currChord] = firstChord;
+	if (firstChord == nil) {
+
+		~enforceParallelOctaves = false;
+		~enforceParallelFifths  = false;
+
+		while { ~getNextChords02.(buildChord, 0) == false } { ~toggleRules.() };
+
+		~chordState[\currChord] = ~chordState[\nextValidChords].choose;
+
+		~resetRule.();
+	} {
+		~chordState[\currChord] = firstChord;
+	};
+
+	~createChordGrid.(~chordState[\currChord], ~chordData[\chordProg][0][1]);
 
 	~chordData[\chordProg].do { |c|
 
 		~chordState[\nextCipher] = c[0];
 
 		if (c[0].contains("A", 1) || c[0].contains("d", 1)) {
-			//~enforceParallelOctaves = false;
+			~enforceParallelOctaves = false;
 			~enforceParallelFifths  = false;
 		};
 
@@ -103,7 +127,7 @@
 		~resetRule.();
 
 		~chordState[\currChord] = ~chordState[\nextValidChords].choose;
-		harmony.add(~chordState[\currChord].copy);
+		~createChordGrid.(~chordState[\currChord], c[1]);
 	}
 }
 )
@@ -153,3 +177,11 @@ while { ~getNextChords02.(buildChord, 0) == false } { ~toggleRules.(~toggleCount
 
 ~a = ~prog.collect { |p| p[1] };
 
+~r = [2, 0.5, 0.5, 1, 2].minItem;
+~d = [2, 0.5, 0.5, 1, 2].sum
+~d/~r
+
+
+~a = Array.fill((~d/~r), {[]});
+
+~a[0] = [nil, nil, nil, nil]
