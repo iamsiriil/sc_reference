@@ -31,7 +31,7 @@
 /*************************************************************************************/
 // Check chord position: Root, first inversion, second inversion
 
-~checkChordPosition = { |nextChord|
+~checkChordPosition = #{ |nextChord|
 	var bassNote = ~getNoteDegree.(nextChord[0]);
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkChordPosition: Function Call".format(~loggerCount).postln; };
@@ -56,7 +56,7 @@
 /*************************************************************************************/
 // Check range between voices
 
-~checkVoiceSpacing = { |nextChord, i|
+~checkVoiceSpacing = #{ |nextChord, i|
 	var cross, n;
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~checkVoiceSpacing: Function Call".format(~loggerCount).postln; };
@@ -82,7 +82,7 @@
 /*************************************************************************************/
 // Check for parallel octaves
 
-~checkParallelOctaves = { |nextChord|
+~checkParallelOctaves = #{ |nextChord|
 	var currChord = ~chordState[\currChord];
 	var numVoices = ~voiceData[\numVoices];
 	var index, result;
@@ -114,7 +114,7 @@
 /*************************************************************************************/
 // Check for parallel fifths
 
-~checkParallelFifths = { |nextChord|
+~checkParallelFifths = #{ |nextChord|
 	var currChord = ~chordState[\currChord];
 	var numVoices = ~voiceData[\numVoices];
 	var index = Array.new(4), result = false;
@@ -148,7 +148,7 @@
 // Checks wich degree gets repeated inside the chord,
 // and if chord is complete (e.g. All triad notes are present).
 
-~checkNoteDuplicate = { |nextChord|
+~checkNoteDuplicate = #{ |nextChord|
 	var degrees, chordAsSet, degreesAsSet;
 	var cipher = ~chordState[\nextCipher];
 
@@ -165,13 +165,13 @@
 
 			case
 			{ ~enforceRootDuplicate == true } {
-				(degrees.count({ |item| item == "Rt" }) == 2).postln;
+				(degrees.count({ |item| item == "Rt" }) == 2);
 			}
 			{ ~enforceThirdDuplicate == true } {
-				(degrees.count({ |item| item.contains("3") }) == 2).postln;
+				(degrees.count({ |item| item.contains("3") }) == 2);
 			}
 			{ ~enforceFifthDuplicate == true } {
-				(degrees.count({ |item| item.contains("5") }) == 2).postln;
+				(degrees.count({ |item| item.contains("5") }) == 2);
 			}
 		} {
 			true;
@@ -184,7 +184,7 @@
 /*************************************************************************************/
 // Final check before chord gets added to validNextChord array
 
-~chordIsValid = { |nextChord|
+~chordIsValid = #{ |nextChord|
 	var result = true;
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~chordIsValid: Function Call".format(~loggerCount).postln; };
@@ -201,13 +201,16 @@
 	if (~enforceParallelFifths == true) {
 		result = result && ~checkParallelFifths.(nextChord);
 	};
+	for (1, 3) { |i|
+		result = result && ~checkVoiceSpacing.(nextChord, i);
+	};
 	result;
 };
 
 /*************************************************************************************/
 // Toggle rules
 
-~toggleRules = { |count|
+~toggleRules = #{ |count|
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~toggleRules: Function Call".format(~loggerCount).postln; };
 
@@ -292,7 +295,7 @@
 /*************************************************************************************/
 // Reset rules
 
-~resetRules = {
+~resetRules = #{
 
 	~enforceVoiceCrossProhibition = true;
 	~enforceMelodicIntervals      = true;

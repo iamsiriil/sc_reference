@@ -30,9 +30,7 @@
 ~chordData = Dictionary[
 	\chords        -> nil,        // Dictionary with arrays
 	\chordProg     -> nil,         // 2D Array
-	\totalDuration -> nil,
-	\resolution    -> nil,
-	\chordGrid     -> nil
+	\totalDuration -> nil
 ];
 
 // Data structure containing the state of chords as they're built and played'
@@ -50,19 +48,21 @@
 /*************************************************************************************/
 // Get all chord notes, within MIDI range, and respective degrees as two separate arrays
 
-~getChordDegreeArrays = {
+~getChordDegreeArrays = #{
 	var chordProg = ~chordData[\chordProg];
 	var ciphers, dictChords, dict;
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getChordDegreeArrays: Function Call".format(~loggerCount).postln; };
 
 	ciphers = chordProg.collect { |c| c[0] };
-	ciphers.asSet.postln;
+	ciphers = ciphers.asSet;
 
-	dict = Dictionary.new();
+	"ciphers: %".format(ciphers).postln;
 	dictChords = Dictionary.new();
 
 	ciphers.do { |c|
+		"c: %".format(c).postln;
+		dict = Dictionary.new();
 		dict[\notes] = ~triads[c][\notes].postln;
 		dict[\degree] = (~triads[c][\degree].wrapExtend(~triads[c][\notes].size));
 
@@ -75,8 +75,8 @@
 /*************************************************************************************/
 // Get chord notes, within MIDI range, and respective degrees, as paired arrays
 
-~getChordDegreePairs = {
-	var chordProg = ~chordData[\chordProg];
+~getChordDegreePairs = { |chordProg|
+	//var chordProg = ~chordData[\chordProg];
 	var chords, dict;
 
 	chords = chordProg.collect { |c| c[0] };    // Separate ciphers from durations
@@ -96,8 +96,8 @@
 /*************************************************************************************/
 // Get all chord notes for each vocal range
 
-~getChordVocalRange = {
-	var cipher = ~chordState[\nextCipher];
+~getChordVocalRange = #{
+	var cipher = ~chordState[\nextCipher].postln;
 	var voices = ~voiceData[\voiceNames];
 	var chordNotes = ~chordData[\chords][cipher][\notes].as(OrderedIdentitySet);
 	var voiceRange, dict;
@@ -124,7 +124,7 @@
 /*************************************************************************************/
 // Remove valid notes other than common tones from respective voices
 
-~resolveCommonTones = {
+~resolveCommonTones = #{
 	var currChord = ~chordState[\currChord];
 	var validNotes = ~chordState[\validNotes];
 	var voiceNames = ~voiceData[\voiceNames];
@@ -148,7 +148,7 @@
 /*************************************************************************************/
 // Get valid notes
 
-~getValidNotes = {
+~getValidNotes = #{
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getValidNotes: Function Call".format(~loggerCount).postln; };
 
@@ -166,7 +166,7 @@
 /*************************************************************************************/
 // Get the corresponding degree of a note, given a cipher
 
-~getNoteDegree = { |note|
+~getNoteDegree = #{ |note|
 	var cipher = ~chordState[\nextCipher];
 	var notes = ~chordData[\chords][cipher][\notes];
 	var degree = ~chordData[\chords][cipher][\degree];
@@ -181,7 +181,7 @@
 /*************************************************************************************/
 // Get an array with the corresponding degrees of the notes of a chord
 
-~getChordNotesDegree = { |chord|
+~getChordNotesDegree = #{ |chord|
 	var degreeArray = Array.new(4);
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getChordNotesDegree: Function Call".format(~loggerCount).postln; };
@@ -195,7 +195,7 @@
 /*************************************************************************************/
 // list of note names (e.g. C)
 
-~getNoteName = { |note|
+~getNoteName = #{ |note|
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getNoteName: Function Call".format(~loggerCount).postln; };
 
@@ -205,7 +205,7 @@
 /*************************************************************************************/
 // list of note names, with respective octave number (e.g. C4)
 
-~getNoteNameOct = { |note|
+~getNoteNameOct = #{ |note|
 
 	if (~logger == true) { ~loggerCount = (~loggerCount + 1); "\nSTEP #%: ~getNoteNameOct: Function Call".format(~loggerCount).postln; };
 
@@ -214,7 +214,7 @@
 
 /*************************************************************************************/
 // Resets ~chordData dictionary values to nil
-~resetChordDicts = {
+~resetChordDicts = #{
 
 	~chordData[\chords]    = nil;
 	~chordData[\chordProg] = nil;

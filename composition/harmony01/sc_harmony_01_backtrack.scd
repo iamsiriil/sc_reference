@@ -13,13 +13,14 @@
 
 		if (i == 4) {
 			if (~chordIsValid.(buildChord)) {
-				~chordState[\nextValidChords].add(buildChord.copy);
+				~chordState[\nextValidChords].add(buildChord.copy).postln;
 				result = true;
 				return.value(result);
 			};
 		};
 
 		if ((i > 0) && (~chordState[\validNotes][v].size == 1)) {
+			buildChord[i] = ~chordState[\validNotes][v].asArray.at(0);
 			result = ~getNextChords.(buildChord, (i + 1));
 			return.value(result);
 		};
