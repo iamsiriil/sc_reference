@@ -50,18 +50,6 @@ while { ~getNextChords.(buildChord, 0) == false } { ~toggleRules.(~toggleCount) 
 ~resetChordDicts.(); ~resetRules.();
 )
 
-~chordData[\chords][\Fm][\notes]
-~progression.flop;
-
-[[48, 52, 60, 67]]
-[[43, 50, 59, 67]]
-[[41, 56, 65, 72]]
-[[48, 55, 64, 72]]
-
-[[53, 56, 65, 72]]
-[[40, 56, 64, 72]]
-[[48, 55, 64, 72]]
-
 /*************************************************************************************/
 (
 ~harmonizeProg = { |firstChord, progression|
@@ -128,9 +116,13 @@ var progression = Array.new(50);
 
 ~getChordDegreeArrays.();
 
-~harmonizeProg.(firstChord, progression);
+~prog = ~harmonizeProg.(firstChord, progression);
+
 
 )
+
+~prog.flop;
+
 ~chordData[\chords]['AbM']['notes']
 
 for (1, 3) { |i| i.postln}
