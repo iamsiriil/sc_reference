@@ -22,8 +22,8 @@ var buildChord = Array.fill(4, {0}).postln;
 ~loggerCount = 0;
 
 // Update chordData and chordSate dicts with input data
-~chordData[\chordProg] = [['CM', 2], ['Fm', 2]];
-~chordState[\currChord] = [48, 55, 64, 72];
+~chordData[\chordProg] = [['CM', 1], ['CA', 1], ['Fm', 1]];
+~chordState[\currChord] = [40, 56, 64, 72];
 ~chordState[\nextCipher] = 'Fm';
 
 ~progression.add(~chordState[\currChord]);
@@ -50,59 +50,59 @@ while { ~getNextChords.(buildChord, 0) == false } { ~toggleRules.(~toggleCount) 
 ~resetChordDicts.(); ~resetRules.();
 )
 
+~chordData[\chords][\Fm][\notes]
 ~progression.flop;
 
+[[48, 52, 60, 67]]
+[[43, 50, 59, 67]]
+[[41, 56, 65, 72]]
+[[48, 55, 64, 72]]
 
-
+[[53, 56, 65, 72]]
+[[40, 56, 64, 72]]
+[[48, 55, 64, 72]]
 
 /*************************************************************************************/
 (
 ~harmonizeProg = { |firstChord, progression|
-	var chordProg = ~chordData[\chordProg];
+	var chordProg = ~chordData[\chordProg].copy;
 	var remainingProg = chordProg.drop(1);
 
 	progression.add(firstChord.copy);
-
-
 	~chordState[\currChord] = firstChord;
 
-	remainingProg.do { |c|
+	remainingProg.do { |c, i|
 		var buildChord = Array.fill(4, {0});
-		var maxAttempts = 10;
+		var maxAttempts = 5;
 		var attempts = 0;
 		var found = false;
 
+		// CRITICAL RESETS
+		~resetRules.();
+		~chordState[\nextValidChords] = Array.new(50);
 		~toggleCount = 0;
 
 		~chordState[\nextCipher] = c[0];
-		~chordState[\nextValidChords] = Array.new(50);
-
 		~getValidNotes.();
 
 		while {
 			attempts = attempts + 1;
 			found = ~getNextChords.(buildChord, 0);
-			(found == false) && (attempts < maxAttempts) && (~toggleCount < 9)
-
+			(found == false) && (attempts < maxAttempts) && (~toggleCount < 8)
 		} {
-			~toggleRules.(~toggleCount)
+			~toggleRules.(~toggleCount);
 		};
 
-		if (found.not) {
-			"WARNING: No valid chord was found for % at position %".format(c[0], i).postln;
-			~chordState[\currChord] = ~voiceData[\voiceNames].collect { |v, i|
-				~chordState[\validNotes][v].minItem({|x| abs(x - ~chordState[\currChord][i]) })
-				?? { ~chordState[\currChord][i] }
-			}
-		} {
-			~chordState[\currChord] = ~chordState[\nextValidChords].choose;
+		if(found.not) {
+			Error("No valid chord found for % after % attempts (toggleCount: %)".format(
+				c[0], attempts, ~toggleCount
+			)).throw;
 		};
 
-
-		//~chordState[\currChord] = ~chordState[\nextValidChords].choose;
+		~chordState[\currChord] = ~chordState[\nextValidChords].choose;
 		progression.add(~chordState[\currChord].copy);
-		~resetRules.();
 	};
+
 	progression;
 };
 )
@@ -124,7 +124,7 @@ var progression = Array.new(50);
 //progression.add(firstChord);
 
 //~chordData[\chordProg] = [['CM', 2], ['Fm', 1], ['EbM', 1], ['AbM', 1], ['C#M', 1], ['CM', 2]];
-~chordData[\chordProg] = [['CM', 2], ['Fm', 1], ['GM', 1], ['CM', 2]];
+~chordData[\chordProg] = [['CM', 2], ['BA', 1], ['BbA', 1], ['Am', 2]];
 
 ~getChordDegreeArrays.();
 
@@ -133,7 +133,7 @@ var progression = Array.new(50);
 )
 ~chordData[\chords]['AbM']['notes']
 
-
+for (1, 3) { |i| i.postln}
 
 
 
