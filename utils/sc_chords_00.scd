@@ -58,4 +58,24 @@
 	prog = prog.asSet;
 
 };
+
+
+/*************************************************************************************/
+// Get chord notes, within MIDI range, and respective degrees, as paired arrays
+
+~getChordDegreePairs = { |triads, chordProg|
+	var ciphers, dict;
+
+	//chords = (chordProg.collect { |c| c[0] }).asSet;    // Separate ciphers from durations
+	ciphers = chordProg.asSet;
+	dict = Dictionary.new();
+
+	ciphers.do { |c|
+		var notes;
+
+		notes = triads[c][\notes] +++ triads[c][\degree].bubble(1);
+		dict[c] = notes;
+	};
+	dict.postln;
+};
 )
